@@ -2163,6 +2163,8 @@ body.customer-mode .pc-public{padding:0!important}
 .pc-art-live{position:absolute;inset:0;z-index:2;display:block!important}
 .pc-art-overlay{position:absolute;display:flex;pointer-events:none}
 .pc-art-reward{left:24.5%;top:29.7%;width:72%;height:11%;padding:0 1.6cqw;justify-content:center;flex-direction:column;background:#f9e7d8;color:#83502e;border-radius:2.8cqw}
+.pc-art-gift{left:6.5%;top:30%;width:15%;height:10%;display:block;fill:#f6e7d7;stroke:#b78249;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.pc-art-progress-label{left:6.5%;top:43.2%;width:48%;height:2.5%;align-items:center;color:#8e7055;font:600 2.7cqw/1.2 Montserrat,Arial,sans-serif;letter-spacing:.28em}
 .pc-art-reward small{font:600 2.6cqw/1.2 Montserrat,Arial,sans-serif;letter-spacing:.24em;color:#906743}
 .pc-art-reward strong{margin-top:.55cqw;font:500 7.3cqw/1.08 Georgia,'Times New Roman',serif;letter-spacing:-.035em;white-space:nowrap;color:#85502c}
 .pc-art-reward span{margin-top:.5cqw;font:500 4.25cqw/1.15 Montserrat,Arial,sans-serif;letter-spacing:.15em;white-space:nowrap;color:#906743}
@@ -4207,7 +4209,9 @@ function renderCard(c){
      return '<span class="pc-art-stamp '+(points>=checkpoint?'done':'')+'"><b>'+pcIcon('diamond')+'</b><small>'+checkpoint+'</small></span>';
    }).join('');
    $('cardState').innerHTML=`
+     <svg class="pc-art-overlay pc-art-gift" viewBox="0 0 64 64" aria-hidden="true"><path d="M9 25h46v31H9zM5 17h54v11H5zM32 17v39M32 17c-1-10-17-15-18-7-1 6 9 8 18 7Zm0 0c1-10 17-15 18-7 1 6-9 8-18 7Z"/></svg>
      <div class="pc-art-overlay pc-art-reward"><small>TU PREMIO</small><strong>${esc(reward)}</strong><span>AL LLEGAR A ${goal} PUNTOS</span></div>
+     <div class="pc-art-overlay pc-art-progress-label">TU PROGRESO</div>
      <div class="pc-art-overlay pc-art-count"><strong>${points}</strong><span>/ ${goal} puntos</span></div>
      <strong class="pc-art-overlay pc-art-percent">${percent}%</strong>
      <div class="pc-art-overlay pc-art-meter" role="progressbar" aria-label="Progreso de puntos" aria-valuemin="0" aria-valuemax="${goal}" aria-valuenow="${Math.min(points,goal)}"><i style="width:${percent}%"></i></div>
