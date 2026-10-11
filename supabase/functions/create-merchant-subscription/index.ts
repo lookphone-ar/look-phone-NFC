@@ -47,9 +47,7 @@ Deno.serve(async (req: Request) => {
   const argentinaToday = new Intl.DateTimeFormat("en-CA", {
     timeZone: "America/Argentina/Cordoba", year: "numeric", month: "2-digit", day: "2-digit",
   }).format(new Date());
-  if (billing?.merchant_status === "trial" && billing?.period_ends_at >= argentinaToday) {
-    return json({ error: `Tu prueba gratuita termina el ${billing.period_ends_at}. Podrás elegir cómo pagar a partir de esa fecha.` }, 409);
-  }
+  const isActiveTrial = billing?.merchant_status === "trial" && billing?.period_ends_at >= argentinaToday;
   if (billing?.billing_status === "authorized") return json({ already_active: true, billing_status: "authorized" });
   if (billing?.billing_status === "pending" && typeof billing?.checkout_url === "string") {
     return json({ init_point: billing.checkout_url, billing_status: "pending" });
@@ -72,6 +70,12 @@ Deno.serve(async (req: Request) => {
   const appBaseUrl = trustedOrigin || "https://ivanramat-lookphone.github.io";
   const appPath = trustedOrigin === "https://looknfc.com.ar" ? "/" : "/look-phone-NFC/";
   const appUrl = `${appBaseUrl}${appPath}`;
+  let firstChargeAt: string | undefined;
+  if (isActiveTrial && /^\d{4}-\d{2}-\d{2}$/.test(billing.period_ends_at)) {
+    const [year, month, day] = billing.period_ends_at.split("-").map(Number);
+    // 12:00 Argentina time on the day after the inclusive trial end (15:00 UTC).
+    firstChargeAt = new Date(Date.UTC(year, month - 1, day + 1, 15, 0, 0)).toISOString();
+  }
   const createResponse = await fetch("https://api.mercadopago.com/preapproval", {
     method: "POST",
     headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json", "X-Idempotency-Key": crypto.randomUUID() },
@@ -80,7 +84,7 @@ Deno.serve(async (req: Request) => {
       external_reference: user.id,
       payer_email: isTestMode ? testPayerEmail : user.email,
       back_url: `${appUrl}?billing=return`,
-      auto_recurring: { frequency: 1, frequency_type: "months", transaction_amount: 30000, currency_id: "ARS", ...(isTestMode ? { end_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString() } : {}) },
+      auto_recurring: { frequency: 1, frequency_type: "months", ...(firstChargeAt ? { start_date: firstChargeAt } : {}), transaction_amount: 30000, currency_id: "ARS", ...(isTestMode ? { end_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString() } : {}) },
       status: "pending",
     }),
   });
