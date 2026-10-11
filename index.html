@@ -3788,7 +3788,7 @@ async function loadBilling(){
  const amount=Number(b?.amount_ars||30000).toLocaleString('es-AR'),rawEnd=b?.period_ends_at||'';
  const end=rawEnd?new Date(rawEnd+'T12:00:00').toLocaleDateString('es-AR'):'';
  const today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Argentina/Cordoba'}).format(new Date());
- const overdue=state==='past_due'&&merchant==='active';
+ const overdue=merchant==='active'&&(state==='past_due'||(state==='authorized'&&!!rawEnd&&rawEnd<today));
  const graceDeadline=rawEnd?new Date(rawEnd+'T12:00:00Z'):null;
  if(graceDeadline)graceDeadline.setUTCDate(graceDeadline.getUTCDate()+2);
  const graceDeadlineText=graceDeadline?new Intl.DateTimeFormat('es-AR',{dateStyle:'long',timeZone:'America/Argentina/Cordoba'}).format(graceDeadline):'';
@@ -3805,7 +3805,7 @@ async function loadBilling(){
  else if(paid&&state==='authorized'){statusText='Plan mensual: $'+amount+' ARS · Suscripción activa';detailText=end?'Próximo cobro: '+end+'.':'Tu suscripción está activa.';}
  else if(paid&&state==='manual_paid'){statusText='Plan mensual: $'+amount+' ARS · Pago manual confirmado';detailText=end?'Acceso habilitado hasta el '+end+'. Para renovar, pagá por transferencia o en efectivo.':'';}
  else if(overdue){statusText='Suscripción vencida · pago pendiente';detailText='Regularizá el pago dentro de los 2 días de gracia para evitar el bloqueo del panel.'+(graceDeadlineText?' Fecha límite: '+graceDeadlineText+'.':'');}
- else if(state==='past_due'&&merchant==='suspended'){statusText='Suscripción vencida · acceso al panel suspendido';detailText='Se cumplió el plazo de gracia de 2 días. Elegí una forma de pago para reactivar tu acceso.';}
+ else if(['past_due','authorized'].includes(state)&&merchant==='suspended'){statusText='Suscripción vencida · acceso al panel suspendido';detailText='Se cumplió el plazo de gracia de 2 días. Elegí una forma de pago para reactivar tu acceso.';}
  else{statusText='Plan mensual: ({showChoices:!comped&&(trial||!paid),manualChoices:!trial,statusText,detailText,manualNote:state==='manual_pending'?'Pago solicitado. La cuenta se habilitará cuando LOOK confirme la recepción.':''});
  setBillingPaymentInstructions(state==='manual_pending'?b?.billing_payment_method:null,amount);
  if($('manageMercadoPago'))$('manageMercadoPago').hidden=state!=='authorized';
