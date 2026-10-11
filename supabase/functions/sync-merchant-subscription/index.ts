@@ -1,6 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
-const allowedOrigins = new Set(["https://lookphone-ar.github.io","https://ivanramat-lookphone.github.io"]);
+const allowedOrigins = new Set(["https://lookphone-ar.github.io","https://ivanramat-lookphone.github.io","https://looknfc.com.ar"]);
 const corsHeaders = (origin: string | null) => ({
   ...(origin && allowedOrigins.has(origin) ? { "Access-Control-Allow-Origin": origin } : {}),
   "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info, prefer",
