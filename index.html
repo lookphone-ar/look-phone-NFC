@@ -2649,7 +2649,7 @@ body.auth-screen #auth .linkbtn{padding:6px 4px;font-size:12px;line-height:1.2}
 .look-join-actions{display:grid;gap:10px;max-width:440px;margin:22px auto 0}
 #lookInfo .look-join-button{width:100%;min-height:50px;border-radius:12px;background:#147ce5;color:#fff;font-weight:750;text-align:center;text-decoration:none}
 #lookInfo .look-join-button:hover{background:#106ed0}
-.look-join-note{display:block;margin-top:10px;color:#667085;font-size:13px;line-height:1.5;text-align:center}
+.look-join-note{display:block;margin-top:10px;color:#667085;font-size:13px;line-height:1.5;text-align:center}.look-price-info{display:grid;gap:4px;max-width:440px;margin:4px auto 0;padding:14px 16px;border:1px solid #d8e3f2;border-radius:12px;background:#f5f8fd;color:#172235;text-align:center;line-height:1.45}.look-price-info strong{font-size:16px}.look-price-info small{font-size:13px;color:#667085}
 body.look-info-mode{background:#f3f7fc;padding-bottom:0;color:#101827}
 body.look-info-mode>header{display:none!important}
 body.look-info-mode main{width:100%;max-width:none;margin:0;padding:0 0 max(32px,env(safe-area-inset-bottom))}
@@ -3389,7 +3389,7 @@ async function loadMerchantInfo(){
     <article><span class="look-how-number" aria-hidden="true">2</span><h2>Registrá visitas y compras</h2><p>Confirmá cada visita y, si cargás el importe, consultá cuánto gastó cada cliente, el ticket promedio y el historial de compras.</p></article>
     <article><span class="look-how-number" aria-hidden="true">3</span><h2>Fidelizá y volvé a contactar</h2><p>Configurá premios y beneficios, encontrá a quién contactar y abrí WhatsApp con mensajes sugeridos para cada cliente.</p></article>
    </div>
-   <div class="look-join-actions"><a class="button look-join-button" href="${esc(merchantJoinUrl())}">Adherí tu comercio</a><small class="look-join-note">Creá una cuenta, confirmá tu correo y completá el perfil de tu comercio. Cada comercio administra sus propios clientes.</small></div>
+   <div class="look-join-actions"><a class="button look-join-button" href="${esc(merchantJoinUrl())}">Adherí tu comercio</a><small class="look-join-note">Creá una cuenta, confirmá tu correo y completá el perfil de tu comercio. Cada comercio administra sus propios clientes.</small><div class="look-price-info" aria-label="Precio y prueba de LOOK"><strong>30 días gratis · luego $30.000 ARS por mes</strong><small>Al terminar la prueba, elegís cómo continuar: Mercado Pago con débito automático, transferencia o efectivo.</small></div></div>
   </section>
   <section class="look-info-hero" style="margin-top:18px" aria-labelledby="merchantToolsTitle">
    <span class="look-info-eyebrow">Herramientas para tu día a día</span>
