@@ -3,6 +3,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 const allowedAppOrigins = new Set([
   "https://ivanramat-lookphone.github.io",
   "https://lookphone-ar.github.io",
+  "https://looknfc.com.ar",
 ]);
 const corsHeaders = (origin: string | null) => ({
   ...(origin && allowedAppOrigins.has(origin) ? { "Access-Control-Allow-Origin": origin } : {}),
@@ -68,7 +69,9 @@ Deno.serve(async (req: Request) => {
     }));
   }
 
-  const appUrl = `${trustedOrigin || "https://ivanramat-lookphone.github.io"}/look-phone-NFC/`;
+  const appBaseUrl = trustedOrigin || "https://ivanramat-lookphone.github.io";
+  const appPath = trustedOrigin === "https://looknfc.com.ar" ? "/" : "/look-phone-NFC/";
+  const appUrl = `${appBaseUrl}${appPath}`;
   const createResponse = await fetch("https://api.mercadopago.com/preapproval", {
     method: "POST",
     headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json", "X-Idempotency-Key": crypto.randomUUID() },
