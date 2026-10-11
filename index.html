@@ -2159,6 +2159,7 @@ body.customer-mode .pc-public{padding:0!important}
 #customer.pc-public{width:min(100%,440px);max-width:440px;margin:0 auto;padding:0!important}
 .pc-art-card{position:relative;width:100%;aspect-ratio:1114/2075;overflow:hidden;isolation:isolate;background:#fbf2eb;container-type:inline-size;margin:0 auto}
 .pc-art-background{position:absolute;inset:0;z-index:0;display:block;width:100%;height:100%;object-fit:fill;user-select:none;pointer-events:none}
+.pc-art-card::after{content:"";position:absolute;z-index:1;left:0;right:0;top:28%;height:59%;background:#fff;pointer-events:none}
 .pc-art-live{position:absolute;inset:0;z-index:2;display:block!important}
 .pc-art-overlay{position:absolute;display:flex;pointer-events:none}
 .pc-art-reward{left:24.5%;top:29.7%;width:72%;height:11%;padding:0 1.6cqw;justify-content:center;flex-direction:column;background:#f9e7d8;color:#83502e;border-radius:2.8cqw}
@@ -2181,9 +2182,11 @@ body.customer-mode .pc-public{padding:0!important}
 .pc-art-message-copy{left:3.5%;top:65.9%;width:93%;height:13.6%;padding:.35cqw 2cqw .35cqw 13cqw;background:#f8e6db;border-radius:3cqw;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
 .pc-art-message-copy strong{font:500 6.3cqw/1.05 Georgia,'Times New Roman',serif;letter-spacing:-.03em;color:#55321f;white-space:nowrap}
 .pc-art-message-copy small{display:block;margin-top:.7cqw;font:400 3.55cqw/1.3 Montserrat,Arial,sans-serif;color:#665b55}
-.pc-art-visits{left:14.2%;top:80.15%;width:81.8%;height:5.15%;padding:.3cqw 1.5cqw;flex-direction:column;justify-content:center;background:#fff;overflow:hidden}
-.pc-art-visits strong{font:600 4.05cqw/1.18 Montserrat,Arial,sans-serif;color:#211915;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pc-art-visits small{margin-top:.7cqw;font:400 3.45cqw/1.2 Montserrat,Arial,sans-serif;color:#817873;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc-art-visits{left:4.2%;top:80.15%;width:91.6%;height:5.15%;padding:.3cqw 2cqw;align-items:center;gap:3cqw;justify-content:flex-start;background:#fff;overflow:hidden}
+.pc-art-bag{width:5.2cqw;height:5.2cqw;flex:none;fill:none;stroke:#b69a75;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.pc-art-visits-copy{min-width:0;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.pc-art-visits-copy strong{font:600 4.05cqw/1.18 Montserrat,Arial,sans-serif;color:#211915;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc-art-visits-copy small{margin-top:.7cqw;font:400 3.45cqw/1.2 Montserrat,Arial,sans-serif;color:#817873;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pc-art-hit{position:absolute;left:4.2%;width:91.6%;z-index:4;min-height:0!important;height:5.35%;padding:0!important;border:0!important;border-radius:5cqw!important;background:transparent!important;color:transparent!important;display:block!important}
 .pc-art-hit-wa{top:87.25%}.pc-art-hit-ig{top:93.2%}
 .pc-art-extra{max-width:440px;margin:14px auto 0;padding:0 12px 22px}
@@ -4210,7 +4213,7 @@ function renderCard(c){
      <div class="pc-art-overlay pc-art-meter" role="progressbar" aria-label="Progreso de puntos" aria-valuemin="0" aria-valuemax="${goal}" aria-valuenow="${Math.min(points,goal)}"><i style="width:${percent}%"></i></div>
      <div class="pc-art-overlay pc-art-stamps" style="grid-template-columns:repeat(${slots},minmax(0,1fr))">${stamps}</div>
      <div class="pc-art-overlay pc-art-message-copy"><strong>${esc(message)}</strong><small>${esc(sub)}</small></div>
-     <div class="pc-art-overlay pc-art-visits"><strong>${visits} compra${visits===1?'':'s'} confirmada${visits===1?'':'s'}</strong><small>Actualizá para ver tus últimos puntos.</small></div>`;
+     <div class="pc-art-overlay pc-art-visits"><svg class="pc-art-bag" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l1 12H4L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><div class="pc-art-visits-copy"><strong>${visits} compra${visits===1?'':'s'} confirmada${visits===1?'':'s'}</strong><small>Actualizá para ver tus últimos puntos.</small></div></div>`;
    return;
  }
  if(!c){$('cardState').innerHTML='';return;} if(!c){$('cardState').innerHTML='';return;}
