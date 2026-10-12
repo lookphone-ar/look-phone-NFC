@@ -3019,7 +3019,14 @@ body.app-starting{display:none!important}
 #customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-brand-logo img{width:var(--logo-scale,180%)!important;height:100%!important;max-width:none!important;max-height:100%!important;object-fit:contain}
 #customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-hero-copy{background:var(--merchant-soft,#eef4fb);color:var(--merchant-ink,#101827);padding:20px 24px 24px}
 #customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-business-name,#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-hero-copy h1,#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-hero-copy p{color:var(--merchant-ink,#101827)!important;opacity:1}
-#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-social-link,#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-social-link.whatsapp,#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-social-link.instagram{background:var(--merchant-primary,#1686ff)!important;color:var(--merchant-button-text,var(--merchant-ink,#101827))!important;border:1px solid color-mix(in srgb,var(--merchant-ink,#101827) 14%,transparent)}
+/* Social brands retain their own colors regardless of the merchant palette. */
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-social-link{border:0;box-shadow:0 4px 10px #10182714;align-items:center}
+/* A separate physical-card frame keeps points and progress visually together. */
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) #cardState:not(:empty){position:relative;isolation:isolate;box-sizing:border-box;margin:20px 0;padding:22px 20px 18px;border:2px solid color-mix(in srgb,var(--merchant-primary,#1686ff) 55%,#b6becb);border-radius:24px;background:linear-gradient(145deg,#fff,color-mix(in srgb,var(--merchant-soft,#eef4fb) 35%,#fff));box-shadow:0 10px 24px #1018271c,inset 0 0 0 5px #ffffffb3;color:var(--merchant-ink,#101827)}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) #cardState .new-progress-head{margin-top:0}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) #cardState .new-progress-track{height:10px;box-shadow:inset 0 1px 3px #10182718}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) #cardState .new-visits{padding-top:13px;border-top:1px solid color-mix(in srgb,var(--merchant-ink,#101827) 14%,transparent)}
+@media(max-width:480px){#customer.merchant-public:not(.lp-master-public):not(.pc-public) #cardState:not(:empty){padding:20px 14px 16px;border-radius:22px}}
 #customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-social-link:focus-visible{outline:3px solid var(--merchant-ink,#101827);outline-offset:3px}
 #customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-brand-logo img{filter:drop-shadow(0 4px 12px #0002)}
 @media(max-width:650px){#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-hero-copy{padding:18px 18px 20px}#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-brand-logo{height:clamp(160px,50vw,205px)!important}}
