@@ -2871,10 +2871,15 @@ body.app-starting{display:none!important}
 
 /* Ponte Coqueta: live benefits card, rendered as real content instead of text over artwork */
 .pc-premium-card{--pc-ink:#38251f;--pc-muted:#8a756b;--pc-gold:#b78958;overflow:hidden;border:1px solid #eadbd1;border-radius:24px;background:#fffdfa;color:var(--pc-ink);box-shadow:0 16px 40px #5a392313}
-.pc-premium-hero{display:block;width:100%;aspect-ratio:1114/580;overflow:hidden;background:#f8eee6;line-height:0;border-bottom:1px solid #eadbd1}
-.pc-premium-hero-art{display:block;width:100%;height:100%;object-fit:cover;object-position:center top}
-.pc-premium-reward{display:grid;grid-template-columns:92px minmax(0,1fr);align-items:center;gap:16px;margin:12px 18px 18px;padding:12px 16px;border:1px solid #ead8ca;border-radius:16px;background:linear-gradient(120deg,#fffaf6,#f8eee7 62%,#fffaf6)}
-.pc-premium-gift-photo{width:88px;height:82px;border-radius:10px;background-color:#f7eee8;background-image:url("assets/ponte-coqueta-card-hires.svg?v=2");background-size:556% auto;background-position:14% 36%;background-repeat:no-repeat;filter:drop-shadow(0 4px 5px #825a3020)}
+.pc-premium-hero{padding:22px 20px 18px;text-align:center;background:radial-gradient(ellipse at 86% 0%,#f3dfd0 0,transparent 43%),linear-gradient(135deg,#fffaf6,#f7eee8);border-bottom:1px solid #eee1d9}
+.pc-premium-logo{display:block;width:min(66%,230px);height:auto;max-height:78px;object-fit:contain;margin:0 auto 8px}
+.pc-premium-brandline{display:block;color:#8d6b56;font:600 10px/1.4 Montserrat,Arial,sans-serif;letter-spacing:.24em}
+.pc-premium-title{margin:16px 0 5px;color:#36231d;font:500 clamp(27px,7vw,38px)/1.08 Georgia,'Times New Roman',serif;letter-spacing:-.025em}
+.pc-premium-tagline{margin:0;color:#87776e;font:500 10px/1.6 Montserrat,Arial,sans-serif;letter-spacing:.22em;text-transform:uppercase}
+.pc-premium-divider{display:flex;align-items:center;justify-content:center;gap:12px;margin:13px auto 0;color:#b78958;font-size:15px}
+.pc-premium-divider:before,.pc-premium-divider:after{content:"";width:58px;height:1px;background:#d9c8bb}
+.pc-premium-reward{display:grid;grid-template-columns:78px minmax(0,1fr);align-items:center;gap:14px;margin:16px;padding:16px;border:1px solid #ead8ca;border-radius:18px;background:linear-gradient(120deg,#fbf2eb,#f8e8dc 62%,#fbf4ef)}
+.pc-premium-gift{display:block;width:74px;height:74px;filter:drop-shadow(0 5px 7px #825a3020)}
 .pc-premium-reward-copy small{display:block;color:#9a7453;font:700 10px/1.4 Montserrat,Arial,sans-serif;letter-spacing:.2em}
 .pc-premium-reward-copy strong{display:block;margin:5px 0;color:#5d3828;font:500 clamp(20px,5.2vw,29px)/1.12 Georgia,'Times New Roman',serif;overflow-wrap:anywhere}
 .pc-premium-reward-copy span{display:block;color:#876c5c;font:600 10px/1.5 Montserrat,Arial,sans-serif;letter-spacing:.11em;text-transform:uppercase}
@@ -2902,7 +2907,7 @@ body.app-starting{display:none!important}
 .pc-premium-actions .pc-contact-wa{background:#15845a;color:#fff}
 .pc-premium-actions .pc-contact-ig{background:linear-gradient(120deg,#7040e8,#e72e9d 62%,#ff7444);color:#fff}
 .pc-premium-actions .pc-contact-icon{width:19px;height:19px;flex:0 0 auto}
-@media(max-width:390px){.pc-premium-hero{padding:18px 14px 16px}.pc-premium-reward{grid-template-columns:62px minmax(0,1fr);gap:10px;margin:12px;padding:12px}.pc-premium-gift-photo{width:68px;height:64px;background-size:556% auto}.pc-premium-progress{padding:2px 15px 16px}.pc-premium-title{font-size:27px}.pc-premium-tagline{letter-spacing:.15em}.pc-premium-count strong{font-size:46px}}
+@media(max-width:390px){.pc-premium-hero{padding:18px 14px 16px}.pc-premium-reward{grid-template-columns:62px minmax(0,1fr);gap:10px;margin:12px;padding:12px}.pc-premium-gift{width:60px;height:60px}.pc-premium-progress{padding:2px 15px 16px}.pc-premium-title{font-size:27px}.pc-premium-tagline{letter-spacing:.15em}.pc-premium-count strong{font-size:46px}}
 
 </style>
 </head>
@@ -4243,11 +4248,22 @@ function renderCard(c){
    }).join('');
    $('cardState').innerHTML=`
      <article class="pc-premium-card">
-       <div class="pc-premium-hero">
-         <img class="pc-premium-hero-art" src="assets/ponte-coqueta-card-hires.svg?v=2" alt="Ponte Coqueta · Tarjeta de beneficios · Tu fidelidad brilla con nosotras">
-       </div>
+       <header class="pc-premium-hero">
+         <img class="pc-premium-logo" src="assets/ponte-coqueta-logo.svg?v=4" alt="Ponte Coqueta">
+         <span class="pc-premium-brandline">ALMACÉN DE JOYAS</span>
+         <h1 class="pc-premium-title">Tarjeta de beneficios</h1>
+         <p class="pc-premium-tagline">Tu fidelidad brilla con nosotras</p>
+         <div class="pc-premium-divider" aria-hidden="true">♡</div>
+       </header>
        <section class="pc-premium-reward" aria-label="Premio">
-         <div class="pc-premium-gift-photo" role="img" aria-label="Regalo con cinta dorada"></div>       <div class="pc-premium-reward-copy"><small>TU PREMIO</small><strong>${esc(reward)}</strong><span>Al llegar a ${goal} puntos</span></div>
+         <svg class="pc-premium-gift" viewBox="0 0 88 88" aria-hidden="true">
+           <defs><linearGradient id="pcGiftBox" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffdfa"/><stop offset="1" stop-color="#ead6c5"/></linearGradient><linearGradient id="pcGiftRibbon" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d9b17f"/><stop offset="1" stop-color="#a97748"/></linearGradient></defs>
+           <path d="M44 29c-2-16-24-18-24-8 0 8 13 10 24 8Zm0 0c2-16 24-18 24-8 0 8-13 10-24 8Z" fill="none" stroke="url(#pcGiftRibbon)" stroke-width="5" stroke-linecap="round"/>
+           <rect x="15" y="35" width="58" height="43" rx="6" fill="url(#pcGiftBox)" stroke="#b78a60" stroke-width="2.5"/>
+           <path d="M44 36v41M12 29h64v13H12z" fill="url(#pcGiftRibbon)" stroke="#a97748" stroke-width="2.5" stroke-linejoin="round"/>
+           <path d="M21 49h15M52 49h13" stroke="#fff8ef" stroke-width="2" stroke-linecap="round" opacity=".9"/>
+         </svg>
+         <div class="pc-premium-reward-copy"><small>TU PREMIO</small><strong>${esc(reward)}</strong><span>Al llegar a ${goal} puntos</span></div>
        </section>
        <section class="pc-premium-progress" aria-label="Progreso de puntos">
          <div class="pc-premium-progress-kicker">TU PROGRESO</div>
