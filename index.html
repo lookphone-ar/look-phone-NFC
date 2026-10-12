@@ -2954,53 +2954,62 @@ body.app-starting{display:none!important}
 #customer.pc-public .pc-art-message-copy strong{font:500 4.9cqw/1.08 Georgia,'Times New Roman',serif;letter-spacing:-.025em;color:#55321f;white-space:normal;text-align:center}
 #customer.pc-public .pc-art-message-copy small{display:block;margin-top:.45cqw;font:400 3.1cqw/1.22 Montserrat,Arial,sans-serif;color:#665b55;text-align:center}
 /* New merchant loyalty cards use the merchant palette without changing the two legacy branded cards. */
-#customer.new-merchant-public{display:grid;gap:16px}
-#customer.new-merchant-public .new-merchant-hero{padding:0;overflow:hidden;border:0;background:linear-gradient(145deg,var(--merchant-ink,#101827),color-mix(in srgb,var(--merchant-ink,#101827) 78%,var(--merchant-primary,#1686ff)));color:var(--merchant-soft,#eef4fb);box-shadow:0 16px 40px #1018271c}
-#customer.new-merchant-public .new-brand-logo{height:clamp(100px,30vw,148px);display:flex;align-items:center;justify-content:center;padding:14px 22px;background:linear-gradient(130deg,color-mix(in srgb,var(--merchant-primary,#1686ff) 35%,transparent),color-mix(in srgb,var(--merchant-soft,#eef4fb) 9%,transparent))}
-#customer.new-merchant-public .new-brand-logo img{display:block;width:100%;max-width:var(--logo-scale,85%);max-height:100%;object-fit:contain;filter:drop-shadow(0 5px 14px #0002)}
-#customer.new-merchant-public .new-brand-fallback{width:84px;height:84px;border-radius:22px;display:grid;place-items:center;background:var(--merchant-primary,#1686ff);color:#fff;font-size:32px;font-weight:850;box-shadow:0 8px 24px #0002}
-#customer.new-merchant-public .new-hero-copy{padding:18px 24px 24px}
-#customer.new-merchant-public .new-business-name{display:block;font-size:20px;letter-spacing:.04em;font-weight:800;color:var(--merchant-soft,#eef4fb)}
-#customer.new-merchant-public .new-hero-copy h1{font-size:clamp(29px,7vw,40px);line-height:1.1;margin:10px 0 9px;color:var(--merchant-soft,#eef4fb)}
-#customer.new-merchant-public .new-hero-copy p{margin:0;color:var(--merchant-soft,#eef4fb);opacity:.88;font-size:16px}
-#customer.new-merchant-public .new-social-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px}
-#customer.new-merchant-public .new-social-link{min-height:54px;border-radius:13px;color:#fff;font-weight:750;display:flex;gap:9px;justify-content:center}
-#customer.new-merchant-public .new-social-link svg{width:23px;height:23px;flex:0 0 23px}
-#customer.new-merchant-public .new-social-link.whatsapp{background:#25D366!important;color:#fff!important}
-#customer.new-merchant-public .new-social-link.instagram{background:linear-gradient(135deg,#833ab4,#e1306c 58%,#f77737)!important;color:#fff!important}
-#customer.new-merchant-public .new-loyalty-card{padding:20px;border:1px solid color-mix(in srgb,var(--merchant-primary,#1686ff) 18%,#fff);box-shadow:0 8px 28px #1018270c}
-#customer.new-merchant-public .new-reward-banner{min-height:118px;gap:16px;padding:13px 18px;background:var(--merchant-soft,#eef4fb);color:var(--merchant-ink,#101827);border:1px solid color-mix(in srgb,var(--merchant-primary,#1686ff) 20%,#fff);border-radius:16px}
-#customer.new-merchant-public .new-reward-banner img{width:clamp(78px,24vw,120px);height:88px;object-fit:contain;mix-blend-mode:multiply}
-#customer.new-merchant-public .new-reward-copy small,#customer.new-merchant-public .new-reward-copy strong{display:block}
-#customer.new-merchant-public .new-reward-copy small{font-size:12px;letter-spacing:.15em;font-weight:800;text-transform:uppercase;opacity:.75}
-#customer.new-merchant-public .new-reward-copy strong{font-size:clamp(19px,5vw,26px);line-height:1.2;margin:4px 0;color:var(--merchant-ink,#101827)}
-#customer.new-merchant-public .new-reward-copy span{font-size:14px;opacity:.78}
-#customer.new-merchant-public .new-progress-head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin:22px 2px 0;color:var(--merchant-ink,#101827)}
-#customer.new-merchant-public .new-points{font-size:clamp(46px,12vw,64px);font-weight:850;letter-spacing:-.06em;line-height:.95}
-#customer.new-merchant-public .new-progress-head .new-percent{font-size:22px;font-weight:800;color:var(--merchant-primary,#1686ff)}
-#customer.new-merchant-public .new-progress-track{height:5px;border-radius:99px;background:color-mix(in srgb,var(--merchant-ink,#101827) 10%,#fff);overflow:hidden;margin:12px 2px 15px}
-#customer.new-merchant-public .new-progress-track i{display:block;height:100%;border-radius:inherit;background:var(--merchant-primary,#1686ff);transition:width .3s ease}
-#customer.new-merchant-public .new-point-stamps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(6px,2vw,12px);margin:16px 0 20px}
-#customer.new-merchant-public .new-point-stamp{aspect-ratio:1;max-width:66px;width:100%;justify-self:center;border-radius:50%;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--merchant-primary,#1686ff) 28%,#d9dee7);background:var(--merchant-soft,#eef4fb);color:var(--merchant-ink,#101827);font-size:17px;font-weight:800}
-#customer.new-merchant-public .new-point-stamp.done{background:var(--merchant-primary,#1686ff);border-color:var(--merchant-primary,#1686ff);color:#fff}
-#customer.new-merchant-public .new-message{padding:15px 16px;border-radius:14px;background:var(--merchant-soft,#eef4fb);color:var(--merchant-ink,#101827);margin:0}
-#customer.new-merchant-public .new-message strong,#customer.new-merchant-public .new-message small{display:block}
-#customer.new-merchant-public .new-message strong{font-size:20px}
-#customer.new-merchant-public .new-message small{margin-top:4px;line-height:1.45;opacity:.8}
-#customer.new-merchant-public .new-visits{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:15px 2px 2px;color:var(--merchant-ink,#101827)}
-#customer.new-merchant-public .new-visits small{opacity:.7}
-#customer.new-merchant-public .customer-actions{display:grid;gap:10px}
-#customer.new-merchant-public .customer-actions button,#customer.new-merchant-public #customerForm button,#customer.new-merchant-public #myDetailsForm button,#customer.new-merchant-public #customerExtras button{background:var(--merchant-primary,#1686ff);border:1px solid var(--merchant-primary,#1686ff);color:#fff}
-#customer.new-merchant-public .customer-actions button.secondary,#customer.new-merchant-public #myDetailsForm button.secondary,#customer.new-merchant-public #customerExtras button.secondary{background:var(--merchant-soft,#eef4fb);border-color:color-mix(in srgb,var(--merchant-primary,#1686ff) 25%,#fff);color:var(--merchant-ink,#101827)}
-#customer.new-merchant-public .customer-premium-note{font-size:13px;text-align:center;line-height:1.4}
-#customer.new-merchant-public .customer-growth section{border-color:color-mix(in srgb,var(--merchant-primary,#1686ff) 20%,#fff);background:#fff}
-#customer.new-merchant-public .customer-growth h3{color:var(--merchant-ink,#101827)}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public){display:grid;gap:16px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-merchant-hero{padding:0;overflow:hidden;border:0;background:linear-gradient(145deg,var(--merchant-ink,#101827),color-mix(in srgb,var(--merchant-ink,#101827) 78%,var(--merchant-primary,#1686ff)));color:var(--merchant-soft,#eef4fb);box-shadow:0 16px 40px #1018271c}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-brand-logo{height:clamp(100px,30vw,148px);display:flex;align-items:center;justify-content:center;padding:14px 22px;background:linear-gradient(130deg,color-mix(in srgb,var(--merchant-primary,#1686ff) 35%,transparent),color-mix(in srgb,var(--merchant-soft,#eef4fb) 9%,transparent))}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-brand-logo img{display:block;width:100%;max-width:var(--logo-scale,85%);max-height:100%;object-fit:contain;filter:drop-shadow(0 5px 14px #0002)}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-brand-fallback{width:84px;height:84px;border-radius:22px;display:grid;place-items:center;background:var(--merchant-primary,#1686ff);color:#fff;font-size:32px;font-weight:850;box-shadow:0 8px 24px #0002}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-hero-copy{padding:18px 24px 24px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-business-name{display:block;font-size:20px;letter-spacing:.04em;font-weight:800;color:var(--merchant-soft,#eef4fb)}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-hero-copy h1{font-size:clamp(29px,7vw,40px);line-height:1.1;margin:10px 0 9px;color:var(--merchant-soft,#eef4fb)}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-hero-copy p{margin:0;color:var(--merchant-soft,#eef4fb);opacity:.88;font-size:16px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-social-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-social-link{min-height:54px;border-radius:13px;color:#fff;font-weight:750;display:flex;gap:9px;justify-content:center}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-social-link svg{width:23px;height:23px;flex:0 0 23px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-social-link.whatsapp{background:#25D366!important;color:#fff!important}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-social-link.instagram{background:linear-gradient(135deg,#833ab4,#e1306c 58%,#f77737)!important;color:#fff!important}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-loyalty-card{padding:20px;border:1px solid color-mix(in srgb,var(--merchant-primary,#1686ff) 18%,#fff);box-shadow:0 8px 28px #1018270c}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-reward-banner{min-height:118px;gap:16px;padding:13px 18px;background:var(--merchant-soft,#eef4fb);color:var(--merchant-ink,#101827);border:1px solid color-mix(in srgb,var(--merchant-primary,#1686ff) 20%,#fff);border-radius:16px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-reward-banner img{width:clamp(78px,24vw,120px);height:88px;object-fit:contain;mix-blend-mode:multiply}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-reward-copy small,#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-reward-copy strong{display:block}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-reward-copy small{font-size:12px;letter-spacing:.15em;font-weight:800;text-transform:uppercase;opacity:.75}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-reward-copy strong{font-size:clamp(19px,5vw,26px);line-height:1.2;margin:4px 0;color:var(--merchant-ink,#101827)}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-reward-copy span{font-size:14px;opacity:.78}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-progress-head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin:22px 2px 0;color:var(--merchant-ink,#101827)}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-points{font-size:clamp(46px,12vw,64px);font-weight:850;letter-spacing:-.06em;line-height:.95}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-progress-head .new-percent{font-size:22px;font-weight:800;color:var(--merchant-primary,#1686ff)}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-progress-track{height:5px;border-radius:99px;background:color-mix(in srgb,var(--merchant-ink,#101827) 10%,#fff);overflow:hidden;margin:12px 2px 15px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-progress-track i{display:block;height:100%;border-radius:inherit;background:var(--merchant-primary,#1686ff);transition:width .3s ease}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-point-stamps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(6px,2vw,12px);margin:16px 0 20px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-point-stamp{aspect-ratio:1;max-width:66px;width:100%;justify-self:center;border-radius:50%;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--merchant-primary,#1686ff) 28%,#d9dee7);background:var(--merchant-soft,#eef4fb);color:var(--merchant-ink,#101827);font-size:17px;font-weight:800}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-point-stamp.done{background:var(--merchant-primary,#1686ff);border-color:var(--merchant-primary,#1686ff);color:#fff}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-message{padding:15px 16px;border-radius:14px;background:var(--merchant-soft,#eef4fb);color:var(--merchant-ink,#101827);margin:0}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-message strong,#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-message small{display:block}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-message strong{font-size:20px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-message small{margin-top:4px;line-height:1.45;opacity:.8}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-visits{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:15px 2px 2px;color:var(--merchant-ink,#101827)}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-visits small{opacity:.7}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .customer-actions{display:grid;gap:10px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .customer-actions button,#customer.merchant-public:not(.lp-master-public):not(.pc-public) #customerForm button,#customer.merchant-public:not(.lp-master-public):not(.pc-public) #myDetailsForm button,#customer.merchant-public:not(.lp-master-public):not(.pc-public) #customerExtras button{background:var(--merchant-primary,#1686ff);border:1px solid var(--merchant-primary,#1686ff);color:#fff}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .customer-actions button.secondary,#customer.merchant-public:not(.lp-master-public):not(.pc-public) #myDetailsForm button.secondary,#customer.merchant-public:not(.lp-master-public):not(.pc-public) #customerExtras button.secondary{background:var(--merchant-soft,#eef4fb);border-color:color-mix(in srgb,var(--merchant-primary,#1686ff) 25%,#fff);color:var(--merchant-ink,#101827)}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .customer-premium-note{font-size:13px;text-align:center;line-height:1.4}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .customer-growth section{border-color:color-mix(in srgb,var(--merchant-primary,#1686ff) 20%,#fff);background:#fff}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .customer-growth h3{color:var(--merchant-ink,#101827)}
 .brand-logo-size{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px}
 .brand-logo-size label{margin:0}
 .brand-logo-size input{grid-column:1/-1;padding:0}
 .brand-logo-size output{font-weight:750;color:var(--merchant-primary,#1686ff)}
 .brand-preview .preview-mark img{max-width:var(--preview-logo-scale,85%)}
-@media(max-width:480px){#customer.new-merchant-public .new-hero-copy{padding:16px 18px 20px}#customer.new-merchant-public .new-social-links{grid-template-columns:1fr}#customer.new-merchant-public .new-loyalty-card{padding:16px}#customer.new-merchant-public .new-point-stamps{gap:5px}#customer.new-merchant-public .new-visits{display:grid}}
+@media(max-width:480px){#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-hero-copy{padding:16px 18px 20px}#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-social-links{grid-template-columns:1fr}#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-loyalty-card{padding:16px}#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-point-stamps{gap:5px}#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-visits{display:grid}}
+/* Override broad legacy card rules only for the new generic template. */
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-brand-logo{display:flex;height:clamp(110px,30vw,148px);box-sizing:border-box}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-brand-logo img{display:block;width:100%;height:100%;max-width:var(--logo-scale,85%);max-height:100%;object-fit:contain}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-social-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) a.new-social-link{display:flex!important;width:100%;min-width:0;min-height:52px;height:auto;padding:12px 10px;line-height:1.2;font-size:15px;white-space:normal;overflow:hidden}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-social-link svg{display:block;width:22px!important;height:22px!important;min-width:22px;max-width:22px;flex:0 0 22px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-reward-banner{background:color-mix(in srgb,var(--merchant-soft,#eef4fb) 12%,#fff);min-height:128px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-reward-banner img{display:block;flex:0 0 auto;width:clamp(78px,24vw,120px);height:88px;max-width:28%;object-fit:contain;mix-blend-mode:multiply}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-point-stamp{background:color-mix(in srgb,var(--merchant-soft,#eef4fb) 12%,#fff)}
 </style>
 </head>
 <body class="app-starting">
