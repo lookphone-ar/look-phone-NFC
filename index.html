@@ -3030,6 +3030,46 @@ body.app-starting{display:none!important}
 #customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-social-link:focus-visible{outline:3px solid var(--merchant-ink,#101827);outline-offset:3px}
 #customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-brand-logo img{filter:drop-shadow(0 4px 12px #0002)}
 @media(max-width:650px){#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-hero-copy{padding:18px 18px 20px}#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-brand-logo{height:clamp(160px,50vw,205px)!important}}
+
+/* Compact mobile layout for new merchant cards. */
+@media(max-width:650px){
+#customer.merchant-public:not(.lp-master-public):not(.pc-public){gap:8px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) >.card{margin-bottom:0}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-brand-logo{height:clamp(88px,25vw,112px)!important;padding:4px 12px!important}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-brand-fallback{width:60px;height:60px;font-size:26px;border-radius:16px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-hero-copy{padding:10px 14px 12px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-business-name{font-size:16px;line-height:1.2;letter-spacing:.02em}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-hero-copy h1{font-size:24px;line-height:1.1;margin:4px 0 5px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-hero-copy p{font-size:13px;line-height:1.35;margin:0}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-social-links{margin-top:10px;gap:8px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) a.new-social-link{min-height:44px;padding:8px 6px;font-size:13px;gap:6px;border-radius:11px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-loyalty-card{padding:10px;border-radius:18px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-reward-banner{min-height:72px;padding:8px 10px;gap:10px;border-radius:12px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-reward-banner img{width:62px;height:56px;max-width:24%}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-reward-copy small{font-size:10px;letter-spacing:.1em}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-reward-copy strong{font-size:19px;line-height:1.15;margin:2px 0}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-reward-copy span{font-size:12px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) #cardState:not(:empty){margin:10px 0;padding:14px 12px 12px;border-radius:18px;box-shadow:0 5px 14px #1018271c,inset 0 0 0 3px #ffffffb3}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-points{font-size:40px;line-height:1}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-progress-head{font-size:13px;gap:6px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-progress-head .new-percent{font-size:18px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) #cardState .new-progress-track{height:8px;margin:8px 0 10px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-point-stamps{gap:6px;margin:10px 0 12px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-point-stamp{max-width:38px;font-size:14px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-message{padding:9px 10px;border-radius:10px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-message strong{font-size:17px;line-height:1.2}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-message small{font-size:12px;line-height:1.35;margin-top:3px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) #cardState .new-visits{margin:9px 0 0;padding-top:8px;gap:3px;font-size:12px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) #cardState .new-visits small{font-size:11px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) #cardActions.customer-actions{margin-top:10px;gap:6px!important}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) #cardActions button{min-height:44px!important;padding:8px!important;font-size:13px!important}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) #cardActions .customer-premium-note{font-size:11px;line-height:1.3;margin-top:4px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) #customerForm{margin-top:12px!important;gap:10px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) #customerForm p{font-size:13px;line-height:1.35;margin:0}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) #customerForm label{font-size:14px;margin-bottom:4px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) #customerForm input,#customer.merchant-public:not(.lp-master-public):not(.pc-public) #customerForm select,#customer.merchant-public:not(.lp-master-public):not(.pc-public) #customerForm textarea{font-size:16px;min-height:44px;padding:8px 10px}
+#customer.merchant-public:not(.lp-master-public):not(.pc-public) >p.muted{margin:2px 0}
+}
 </style>
 </head>
 <body class="app-starting">
