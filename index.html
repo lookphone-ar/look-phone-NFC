@@ -4248,20 +4248,35 @@ function renderCard(c){
    }).join('');
    $('cardState').innerHTML=`
      <article class="pc-premium-card">
-       <header class="pc-premium-hero">
+       <div class="pc-premium-hero">
          <img class="pc-premium-logo" src="assets/ponte-coqueta-logo.svg?v=4" alt="Ponte Coqueta">
          <span class="pc-premium-brandline">ALMACÉN DE JOYAS</span>
          <h1 class="pc-premium-title">Tarjeta de beneficios</h1>
          <p class="pc-premium-tagline">Tu fidelidad brilla con nosotras</p>
          <div class="pc-premium-divider" aria-hidden="true">♡</div>
-       </header>
+       </div>
        <section class="pc-premium-reward" aria-label="Premio">
-         <svg class="pc-premium-gift" viewBox="0 0 88 88" aria-hidden="true">
-           <defs><linearGradient id="pcGiftBox" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffdfa"/><stop offset="1" stop-color="#ead6c5"/></linearGradient><linearGradient id="pcGiftRibbon" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d9b17f"/><stop offset="1" stop-color="#a97748"/></linearGradient></defs>
-           <path d="M44 29c-2-16-24-18-24-8 0 8 13 10 24 8Zm0 0c2-16 24-18 24-8 0 8-13 10-24 8Z" fill="none" stroke="url(#pcGiftRibbon)" stroke-width="5" stroke-linecap="round"/>
-           <rect x="15" y="35" width="58" height="43" rx="6" fill="url(#pcGiftBox)" stroke="#b78a60" stroke-width="2.5"/>
-           <path d="M44 36v41M12 29h64v13H12z" fill="url(#pcGiftRibbon)" stroke="#a97748" stroke-width="2.5" stroke-linejoin="round"/>
-           <path d="M21 49h15M52 49h13" stroke="#fff8ef" stroke-width="2" stroke-linecap="round" opacity=".9"/>
+         <svg class="pc-premium-gift" viewBox="0 0 96 96" aria-hidden="true">
+           <defs>
+             <linearGradient id="pcGiftFront" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff9f1"/><stop offset=".55" stop-color="#ead6c1"/><stop offset="1" stop-color="#c59c72"/></linearGradient>
+             <linearGradient id="pcGiftSide" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d6b18a"/><stop offset="1" stop-color="#a8784e"/></linearGradient>
+             <linearGradient id="pcGiftGold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f1d39a"/><stop offset=".5" stop-color="#c19355"/><stop offset="1" stop-color="#94683c"/></linearGradient>
+             <filter id="pcGiftShadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#6d4325" flood-opacity=".2"/></filter>
+           </defs>
+           <ellipse cx="49" cy="84" rx="31" ry="5" fill="#8d684a" opacity=".16"/>
+           <g filter="url(#pcGiftShadow)">
+             <path d="M21 43 65 39 79 47 35 52Z" fill="#fff7ee" stroke="#ad8055" stroke-width="1.5"/>
+             <path d="M35 52 79 47 78 78 35 83Z" fill="url(#pcGiftSide)" stroke="#a8784e" stroke-width="1.5"/>
+             <path d="M18 48 35 52 35 83 19 77Z" fill="url(#pcGiftFront)" stroke="#b58a61" stroke-width="1.5"/>
+             <path d="M42 51 51 50 51 81 42 82Z" fill="url(#pcGiftGold)"/>
+             <path d="M35 48 79 43 80 53 35 58Z" fill="url(#pcGiftGold)" stroke="#a8784e" stroke-width="1.4"/>
+             <path d="M18 44 65 39 66 49 19 54Z" fill="#e4c18e" stroke="#a8784e" stroke-width="1.4"/>
+             <path d="M46 42c-10-2-23-8-20-15 3-7 15-3 21 9 1-13 9-23 16-19 8 5-3 18-17 25Z" fill="url(#pcGiftGold)" stroke="#986d43" stroke-width="1.6" stroke-linejoin="round"/>
+             <path d="M45 41c-7-8-14-12-17-10M48 39c7-11 13-15 18-17" fill="none" stroke="#fff1ce" stroke-width="2" stroke-linecap="round" opacity=".72"/>
+             <circle cx="46" cy="43" r="3.8" fill="#f5dfb4" stroke="#94683c" stroke-width="1.2"/>
+           </g>
+           <path d="m82 24 2.4 5.2 5.1 2.2-5.1 2.3-2.4 5.1-2.2-5.1-5.2-2.3 5.2-2.2Z" fill="#c19355" opacity=".8"/>
+           <circle cx="16" cy="28" r="1.7" fill="#c19355" opacity=".6"/>
          </svg>
          <div class="pc-premium-reward-copy"><small>TU PREMIO</small><strong>${esc(reward)}</strong><span>Al llegar a ${goal} puntos</span></div>
        </section>
