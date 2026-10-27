@@ -8,7 +8,7 @@
   "theme_color": "#ffffff",
   "icons": [
     {
-      "src": "assets/look-app-icon.svg?v=2",
+      "src": "assets/look-app-icon.svg?v=20261027",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
