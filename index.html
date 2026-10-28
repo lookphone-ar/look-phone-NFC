@@ -3456,7 +3456,23 @@ async function raw(path,{method='GET',body,token}={}){const headers={apikey:API_
 async function refreshSession(){if(!session?.refresh_token)throw new Error('Volvé a entrar a tu cuenta.');try{const s=await raw('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:session.refresh_token}});saveSession({...s,expires_at:Math.floor(Date.now()/1000)+s.expires_in});}catch(e){saveSession(null);view('auth');throw e;}}
 async function request(path,options={},privateRequest=false){if(privateRequest){if(!session)throw new Error('Entrá a tu cuenta.');if(!session.expires_at||session.expires_at<Date.now()/1000+60)await refreshSession();}try{return await raw(path,{...options,token:privateRequest?session.access_token:undefined});}catch(e){if(privateRequest&&e.status===401){await refreshSession();return raw(path,{...options,token:session.access_token});}throw e;}}
 const rpc=(name,body,priv=false)=>request('/rest/v1/rpc/'+name,{method:'POST',body},priv);
-function bindBusy(id,event,fn){$(id).addEventListener(event,async e=>{e.preventDefault();const buttons=[...$(id).querySelectorAll('button')];if($(id).tagName==='BUTTON')buttons.push($(id));if(buttons.some(b=>b.disabled))return;buttons.forEach(b=>b.disabled=true);try{await fn(e);}catch(err){notify(friendly(err),true);}finally{buttons.forEach(b=>b.disabled=false);}});}
+function bindBusy(id,event,fn){
+ const element=$(id);let busy=false;
+ element.addEventListener(event,async e=>{
+  e.preventDefault();
+  // Un botón secundario deshabilitado (por ejemplo "Quitar foto") no debe
+  // impedir enviar el formulario por primera vez.
+  if(busy||(element.tagName==='BUTTON'&&element.disabled))return;
+  busy=true;
+  const buttons=[...element.querySelectorAll('button')];
+  if(element.tagName==='BUTTON')buttons.push(element);
+  const enabledButtons=buttons.filter(button=>!button.disabled);
+  enabledButtons.forEach(button=>button.disabled=true);
+  try{await fn(e);}
+  catch(err){notify(friendly(err),true);}
+  finally{enabledButtons.forEach(button=>button.disabled=false);busy=false;}
+ });
+}
 function friendly(e){
  const message=String(e?.message||''),code=String(e?.code||'');
  if(code==='over_email_send_rate_limit'||/email rate limit exceeded/i.test(message))return 'Se alcanzó el límite de correos de confirmación. Probá más tarde o consultá con soporte de LOOK.';
