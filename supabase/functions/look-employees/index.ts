@@ -1,6 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 type Data=Record<string,any>;
-const origins=new Set(["https://lookphone-ar.github.io","https://ivanramat-lookphone.github.io"]);
+const origins=new Set(["https://lookphone-ar.github.io","https://ivanramat-lookphone.github.io","https://looknfc.com.ar","https://www.looknfc.com.ar"]);
 const hex=(bytes:Uint8Array)=>Array.from(bytes,b=>b.toString(16).padStart(2,"0")).join("");
 const newSecret=()=>hex(crypto.getRandomValues(new Uint8Array(32)));
 async function sha(s:string){return hex(new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s))));}
@@ -133,9 +133,9 @@ Deno.serve(async(req:Request)=>{
   if(action==="record"){
     if(!uuid(body.client_id)||!uuid(body.event)||!["visit","redeem"].includes(body.kind))
        return ret({error:"Movimiento inválido"},400);
-    const amount=body.amount===null||body.amount===undefined?null:Number(body.amount);
-    if(amount!==null&&(!Number.isFinite(amount)||amount<0||amount>9999999999.99))
-       return ret({error:"Monto de compra inválido"},400);
+    const amount=body.amount===null||body.amount===undefined||body.amount===""?null:Number(body.amount);
+    if(body.kind==="visit"&&(amount===null||!Number.isFinite(amount)||amount<=0||amount>9999999999.99||Math.round(amount*100)/100!==amount))
+       return ret({error:"Para sumar 1 punto ingresá el monto real de la venta, mayor a $0."},400);
     const res=await rpc("nfc_employee_record",{p_employee:employee.id,p_client:body.client_id,
       p_kind:body.kind,p_event:body.event,p_sale_amount:body.kind==="visit"?amount:null});
     return ret({recorded:true,result:res});
