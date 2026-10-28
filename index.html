@@ -3090,47 +3090,55 @@ body.app-starting{display:none!important}
 #customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-card-tools button svg{display:block;width:22px;height:22px;stroke:currentColor!important}
 #customer.merchant-public:not(.lp-master-public):not(.pc-public) .new-card-tools .lp-notify-dot{width:8px;height:8px;top:5px;right:5px;border:2px solid #fff;background:#e3314f}
 
-/* LOOK Phone reward card: opaque image-free text area + uploaded prize photo */
+/* Look Phone: conservar el fondo ORIGINAL con fundas, vidrios y accesorios. */
 .lp-master-public .lp-crisp-reward-mask{
- left:2.6%!important;top:43.65%!important;width:94.8%!important;height:12.4%!important;
- z-index:7!important;border-radius:1.7cqw!important;background:#fff!important;
- box-shadow:inset 0 -1px 0 #e9eff5!important
+ left:2.6%!important;top:43.65%!important;width:58%!important;height:12.4%!important;
+ z-index:7!important;border-radius:0!important;box-shadow:none!important;
+ background:linear-gradient(90deg,#fff 0%,#fff 80%,#ffffff00 100%)!important
 }
 .lp-master-public .lp-crisp-reward{
- left:5.3%!important;top:44.05%!important;width:89.2%!important;height:11.65%!important;
- box-sizing:border-box!important;display:grid!important;
- grid-template-columns:minmax(0,1fr) 19cqw!important;gap:2.2cqw!important;
- align-items:center!important;z-index:9!important;margin:0!important
+ left:5.3%!important;top:44.05%!important;width:51%!important;height:11.65%!important;
+ box-sizing:border-box!important;display:flex!important;align-items:center!important;z-index:9!important;margin:0!important
 }
-.lp-master-public .lp-crisp-reward-copy{min-width:0!important;max-width:100%!important}
+.lp-master-public .lp-crisp-reward-copy{min-width:0!important;max-width:100%!important;width:100%!important}
 .lp-master-public .lp-crisp-reward-copy small{
  display:block!important;font-size:2.55cqw!important;line-height:1.15!important;
  letter-spacing:.12em!important;color:#1686ff!important
 }
 .lp-master-public .lp-crisp-reward-copy strong{
- display:block!important;margin:.65cqw 0 .5cqw!important;font-size:4.75cqw!important;
+ display:block!important;margin:.65cqw 0 .5cqw!important;font-size:4.45cqw!important;
  line-height:1.16!important;font-weight:800!important;letter-spacing:-.02em!important;
  color:#101d35!important;white-space:normal!important;overflow-wrap:break-word!important;
- max-height:3.5em!important;overflow:hidden!important
+ max-height:none!important;overflow:visible!important
 }
-.lp-master-public .lp-crisp-reward-copy strong span{display:block!important}
+.lp-master-public .lp-crisp-reward-copy strong span{display:block!important;white-space:nowrap!important}
 .lp-master-public .lp-crisp-reward-copy>span{
- display:block!important;line-height:1.2!important;font-size:2.9cqw!important;
+ display:block!important;line-height:1.2!important;font-size:2.8cqw!important;
  color:#586981!important;white-space:normal!important
 }
-.lp-master-public .lp-crisp-reward-visual{
- width:19cqw!important;height:19cqw!important;min-width:0!important;
- box-sizing:border-box!important;border-radius:3cqw!important;overflow:hidden!important;
- display:grid!important;place-items:center!important;background:#f3f7fd!important;
- border:1px solid #e2eaf4!important;box-shadow:0 .5cqw 2.2cqw #122d4d0d!important
+/* La foto que sube el comercio se muestra debajo, sin sustituir la ilustración. */
+.lp-master-public .lp-uploaded-reward{
+ display:flex;align-items:center;gap:12px;max-width:440px;margin:9px auto 12px;
+ border:1px solid #dce7f4;border-radius:14px;background:#fff;padding:10px;
+ box-shadow:0 4px 14px #132c4a0c;font-family:"Montserrat",sans-serif
 }
-.lp-master-public .lp-crisp-reward-visual img{
- display:block!important;width:100%!important;height:100%!important;
- object-fit:contain!important;mix-blend-mode:normal!important
+.lp-master-public .lp-uploaded-reward img{
+ width:82px;height:82px;flex:0 0 82px;object-fit:cover;display:block;
+ border-radius:10px;border:1px solid #e5ebf3;background:#f5f7fb
+}
+.lp-master-public .lp-uploaded-reward figcaption{min-width:0;color:#16243b}
+.lp-master-public .lp-uploaded-reward figcaption strong{
+ display:block;color:#1686ff;font-size:11px;letter-spacing:.12em
+}
+.lp-master-public .lp-uploaded-reward figcaption span{
+ display:block;font-size:14px;font-weight:700;overflow-wrap:anywhere;margin-top:5px
+}
+.lp-master-public .lp-uploaded-reward figcaption small{
+ display:block;font-size:11px;color:#66758b;margin-top:5px
 }
 @media(max-width:380px){
- .lp-master-public .lp-crisp-reward-copy strong{font-size:4.45cqw!important}
- .lp-master-public .lp-crisp-reward-visual{width:17.6cqw!important;height:17.6cqw!important;justify-self:end}
+ .lp-master-public .lp-crisp-reward-copy strong{font-size:4.15cqw!important}
+ .lp-master-public .lp-crisp-reward-copy>span{font-size:2.62cqw!important}
 }
 
 </style>
@@ -3200,7 +3208,7 @@ body.app-starting{display:none!important}
 <section id="clientHistory" class="card inset-card" hidden aria-labelledby="clientHistoryTitle"><div class="row spread"><h2 id="clientHistoryTitle">Historial</h2><button id="closeClientHistory" type="button" class="secondary">Cerrar</button></div><div id="clientHistoryContent" class="table" aria-live="polite"></div></section>
 <h3>Lista de clientes</h3><p class="muted">Nuevo: 0–2 visitas · Frecuente: 3–9 · VIP: 10 o más.</p><div id="clientFilters" class="filter-chips" aria-label="Filtros rápidos"></div><div class="client-tools"><div class="client-search"><label for="clientSearch">Buscar cliente</label><input id="clientSearch" type="search" placeholder="Nombre o teléfono/WhatsApp" autocomplete="off" aria-controls="clients"></div><div><label for="clientCategory">Categoría</label><select id="clientCategory" aria-controls="clients"><option value="all">Todos</option><option value="new">Nuevos</option><option value="frequent">Frecuentes</option><option value="vip">VIP</option><option value="eligible">Con premio</option><option value="near">Cerca del premio</option><option value="inactive">Inactivos</option><option value="never">Sin visitas</option><option value="birthday">Cumpleaños próximos</option></select></div><div><label for="clientSort">Ordenar por</label><select id="clientSort" aria-controls="clients"><option value="name">Nombre A-Z</option><option value="points-desc">Mayor cantidad de puntos</option><option value="points-asc">Menor cantidad de puntos</option><option value="visits-desc">Más visitas</option><option value="visits-asc">Menos visitas</option><option value="last-visit">Última visita</option></select></div></div><div class="row spread client-summary"><p id="clientSummary" class="muted"></p><button id="clearClientFilters" type="button" class="secondary">Limpiar filtros</button></div><div class="table clients-table"><table><thead><tr><th>Cliente</th><th>Puntos / visitas</th><th>Acciones</th></tr></thead><tbody id="clients" aria-live="polite"></tbody></table></div></div><div class="birthday-sections" id="birthdays" aria-live="polite"><section class="card birthday-box"><h3>🎂 Cumpleaños de este mes</h3><div id="birthdaysMonth" class="birthday-list"></div></section><section class="card birthday-box"><h3>📅 Próximos cumpleaños</h3><div id="birthdaysUpcoming" class="birthday-list"></div></section></div></section>
 
-<section class="tab-panel" data-panel="loyalty" aria-labelledby="loyaltyTitle" hidden><div class="section-heading"><span class="eyebrow">Recompensas</span><h2 id="loyaltyTitle">Fidelización</h2><p class="muted">Definí el objetivo que impulsa la próxima visita.</p></div><div class="card"><form id="rewardForm" class="form"><p class="muted">Configurá la meta y el beneficio que verán tus clientes. Los cambios se aplican al próximo canje.</p><div><label for="rewardProfile">Comercio / perfil</label><select id="rewardProfile" required></select></div><div class="cols"><div><label for="rewardGoal">Puntos necesarios para canjear</label><input id="rewardGoal" type="number" min="1" max="1000" required></div><div><label for="rewardName">Nombre o descripción del premio</label><input id="rewardName" maxlength="300" placeholder="Ej.: 10% de descuento" required></div></div><div><label>Vista previa del premio</label><div id="rewardPreview" class="notice" aria-live="polite"></div></div><div class="row" style="align-items:center;flex-wrap:wrap"><div><label for="mainRewardPhoto">Foto del premio principal (opcional)</label><input type="file" id="mainRewardPhoto" accept="image/png,image/jpeg,image/webp"><small>PNG, JPG o WebP · hasta 5 MB</small></div><div id="mainRewardPhotoPreview"></div><button type="button" id="removeMainRewardPhoto" class="secondary">Quitar foto</button></div><button id="saveReward">Guardar premio</button></form></div>
+<section class="tab-panel" data-panel="loyalty" aria-labelledby="loyaltyTitle" hidden><div class="section-heading"><span class="eyebrow">Recompensas</span><h2 id="loyaltyTitle">Fidelización</h2><p class="muted">Definí el objetivo que impulsa la próxima visita.</p></div><div class="card"><form id="rewardForm" class="form"><p class="muted">Configurá la meta y el beneficio que verán tus clientes. Los cambios se aplican al próximo canje.</p><div><label for="rewardProfile">Comercio / perfil</label><select id="rewardProfile" required></select></div><div class="cols"><div><label for="rewardGoal">Puntos necesarios para canjear</label><input id="rewardGoal" type="number" min="1" max="1000" required></div><div><label for="rewardName">Nombre o descripción del premio</label><input id="rewardName" maxlength="300" placeholder="Ej.: 10% de descuento" required></div></div><div><label>Vista previa del premio</label><div id="rewardPreview" class="notice" aria-live="polite"></div></div><div class="row" style="align-items:center;flex-wrap:wrap"><div><label for="mainRewardPhoto">Foto del premio principal (opcional)</label><input type="file" id="mainRewardPhoto" accept="image/png,image/jpeg,image/webp"><small>PNG, JPG o WebP · hasta 5 MB. Aparece en la tarjeta de beneficios del cliente. En Look Phone se muestra debajo del diseño original, sin tapar los accesorios.</small></div><div id="mainRewardPhotoPreview"></div><button type="button" id="removeMainRewardPhoto" class="secondary">Quitar foto</button></div><button id="saveReward">Guardar premio</button></form></div>
 <section class="card growth-card"><h2>🏆 Premios escalonados</h2><p class="muted">Sumá premios opcionales para distintos niveles de puntos. El premio principal sigue funcionando igual.</p><form id="tierForm" class="form"><div class="cols"><div><label for="tierPoints">Puntos necesarios</label><input id="tierPoints" type="number" min="1" max="1000" required placeholder="Ej.: 3"></div><div><label for="tierReward">Beneficio</label><input id="tierReward" maxlength="300" required placeholder="Ej.: 5% de descuento"></div></div><div><label for="tierPhoto">Foto del premio escalonado (opcional)</label><input type="file" id="tierPhoto" accept="image/png,image/jpeg,image/webp"><small>Hasta 5 MB. La foto aparecerá en la tarjeta.</small></div><button>Agregar nivel</button></form><div id="tierList" class="growth-list"></div><hr><p class="muted" style="margin:14px 0 0">Solo se suman puntos al registrar compras con monto mayor a $0. Los bonos automáticos por referidos están desactivados.</p></section>
 <section class="card"><h2>Estado de fidelización</h2><div id="loyaltyMetrics" class="metric-grid"></div><h3>Clientes cerca del premio</h3><div id="loyaltyNear" class="loyalty-list"></div><h3>Premios disponibles</h3><div id="loyaltyEligible" class="loyalty-list"></div><div class="section-block"><h3 style="margin:0">Clientes y progreso</h3><p class="muted" style="margin:5px 0 12px">Abrí una ficha para ver toda la relación con el cliente.</p><div id="loyaltyClients" class="loyalty-directory"></div></div><section id="loyaltyClientDetail" class="loyalty-detail" hidden aria-live="polite"></section></section></section>
 
@@ -3530,7 +3538,7 @@ function customerPublicHtml(p,card){
       <div class="lp-crisp-mask lp-crisp-reward-mask" aria-hidden="true"></div>
       <div class="lp-crisp-reward">
        <div class="lp-crisp-reward-copy"><small>TU PREMIO</small><strong>${lookRewardTitleHtml(p.reward)}</strong><span>Al llegar a ${Number(p.goal)||5} puntos</span></div>
-       <div class="lp-crisp-reward-visual"><img src="${esc(rewardPhotoUrl(p.reward_image_path)||'assets/reward-gift.svg?v=1')}" alt="${rewardPhotoUrl(p.reward_image_path)?'Foto del premio de '+esc(p.business):'Ilustración del premio'}" loading="lazy"></div>
+       
       </div>
       <div class="lp-crisp-mask lp-crisp-progress-label-mask" aria-hidden="true"></div>
       <div class="lp-crisp-progress-label" aria-hidden="true">TU PROGRESO</div>
@@ -3558,6 +3566,7 @@ function customerPublicHtml(p,card){
       <button type="button" data-live-nav="more"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.7" fill="currentColor"/><circle cx="12" cy="12" r="1.7" fill="currentColor"/><circle cx="19" cy="12" r="1.7" fill="currentColor"/></svg><span>Más</span></button>
     </nav>
     <div class="lp-master-extra">
+      ${rewardPhotoUrl(p.reward_image_path)?`<figure class="lp-uploaded-reward"><img src="${esc(rewardPhotoUrl(p.reward_image_path))}" alt="Foto del premio de ${esc(p.business)}" loading="lazy"><figcaption><strong>FOTO REAL DEL PREMIO</strong><span>${esc(p.reward)}</span><small>Premio al llegar a ${Number(p.goal)||5} puntos</small></figcaption></figure>`:''}
       ${!card?'<button type="button" id="lpCreateCard" class="lp-master-create">Crear mi tarjeta</button>':''}
       ${lookForm}
       ${lookDiscoverHtml(p)}
@@ -4282,7 +4291,7 @@ function renderLoyaltyClientDetail(clientId){
 async function redeemCoupon(couponId,clientId){const q=coupons.find(x=>x.id===couponId),c=clients.find(x=>x.id===clientId);if(!q||!c)throw new Error('Cupón o cliente no encontrado.');if(!confirm('¿Canjear '+q.code+' para '+c.name+'? Este cupón quedará marcado como usado.'))return;try{await request('/rest/v1/nfc_coupon_redemptions',{method:'POST',body:{coupon_id:q.id,client_id:c.id}},true);await loadAdmin();renderLoyaltyClientDetail(c.id);notify('Cupón '+q.code+' canjeado.');}catch(e){if(e.code==='23505')notify('Este cliente ya usó este cupón.',true);else throw e;}}
 function rewardPhotoUrl(path){if(typeof path!=='string'||!/^[-a-f0-9]{36}\/[-a-f0-9]{36}\.(png|jpg|webp)$/.test(path))return '';return BASE+'/storage/v1/object/public/merchant-rewards/'+path;}
 function rewardPhotoHtml(path,name,size=64){const url=rewardPhotoUrl(path);return url?'<img loading="lazy" src="'+esc(url)+'" alt="'+esc(name||'Premio')+'" style="width:'+size+'px;height:'+size+'px;object-fit:cover;border-radius:12px;border:1px solid #e2e8f0;flex:0 0 auto">':'';}
-function renderMainRewardPhoto(p){if($('mainRewardPhotoPreview'))$('mainRewardPhotoPreview').innerHTML=rewardPhotoHtml(p?.reward_image_path,p?.reward,72);if($('removeMainRewardPhoto'))$('removeMainRewardPhoto').disabled=!p?.reward_image_path;}
+function renderMainRewardPhoto(p){if($('mainRewardPhotoPreview'))$('mainRewardPhotoPreview').innerHTML=p?.reward_image_path?rewardPhotoHtml(p.reward_image_path,p.reward,72):'<small class="muted">Todavía no subiste una foto del premio.</small>';if($('removeMainRewardPhoto'))$('removeMainRewardPhoto').disabled=!p?.reward_image_path;}
 async function uploadRewardPhoto(file,profileId){if(!file)return null;const ext={'image/png':'png','image/jpeg':'jpg','image/webp':'webp'}[file.type];if(!ext||file.size>5*1024*1024)throw new Error('Elegí una foto PNG, JPG o WebP de hasta 5 MB.');if(!isUUID(profileId)||!profiles.some(p=>p.id===profileId))throw new Error('Comercio no autorizado.');if(!session?.expires_at||session.expires_at<Date.now()/1000+60)await refreshSession();const path=profileId+'/'+uuid()+'.'+ext;const res=await fetch(BASE+'/storage/v1/object/merchant-rewards/'+path,{method:'POST',headers:{apikey:API_KEY,Authorization:'Bearer '+session.access_token,'Content-Type':file.type,'x-upsert':'false'},body:file});if(!res.ok){const err=await res.json().catch(()=>({}));throw new Error(err.message||err.error||'No se pudo subir la foto.');}return path;}
 function activeProfileForGrowth(){return profiles.find(p=>p.id===$('rewardProfile')?.value)||profiles[0];}
 function renderGrowthTools(){
