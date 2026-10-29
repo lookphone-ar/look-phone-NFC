@@ -68,6 +68,7 @@
     const intro = document.getElementById('lookSaveIntro');
     const steps = document.getElementById('lookSaveSteps');
     const browserNote = document.getElementById('lookSaveBrowserNote');
+    const safetyNote = document.getElementById('lookSaveSecurityNote');
     intro.textContent = 'Guardá el logo de LOOK en tu celular para entrar directo a tu tarjeta de ' + active.business + '.';
     steps.replaceChildren();
     const instructions = isIOS
@@ -78,6 +79,9 @@
     for (const text of instructions) {
       const li = document.createElement('li'); li.textContent = text; steps.append(li);
     }
+    safetyNote.textContent = isIOS
+      ? '¿Ya tenés un ícono que abre «INGRESAR»? Eliminá ese acceso viejo. Después guardá tu tarjeta desde Safari con «Abrir como app web» desactivado. El enlace es personal: no lo compartas.'
+      : 'El teléfono te pedirá confirmar la instalación. Tu tarjeta es personal: no compartas el enlace.';
     browserNote.hidden = !isEmbedded;
     browserNote.textContent = 'Abriste la tarjeta dentro de otra app. Tocá “Copiar enlace” y abrilo en ' + (isIOS ? 'Safari' : 'Chrome') + ' para agregarla al inicio.';
     previousFocus = document.activeElement;
@@ -167,7 +171,7 @@
     if (!document.getElementById('lookSaveGuide')) {
       const dialog = document.createElement('dialog'); dialog.id = 'lookSaveGuide'; dialog.className = 'look-save-guide';
       dialog.setAttribute('aria-labelledby', 'lookSaveTitle');
-      dialog.innerHTML = '<button type="button" class="look-save-close" aria-label="Cerrar indicaciones">×</button><img src="assets/look-home-192.png?v=20261028" alt="LOOK" width="64" height="64"><h2 id="lookSaveTitle">Guardá tu tarjeta en el inicio</h2><p id="lookSaveIntro"></p><p id="lookSaveBrowserNote" class="look-save-note" hidden></p><ol id="lookSaveSteps"></ol><p class="look-save-note">En iPhone, desactivá “Abrir como app web”. Si ya tenés un ícono que abre la pantalla INGRESAR, eliminá ese ícono anterior y guardá de nuevo tu tarjeta. El enlace es personal: no lo compartas.</p><button type="button" id="lookSaveCopy" class="secondary">Copiar enlace de mi tarjeta</button><button type="button" id="lookSaveDone" class="look-save-primary">Entendido</button><p id="lookSaveFeedback" role="status" aria-live="polite"></p>';
+      dialog.innerHTML = '<button type="button" class="look-save-close" aria-label="Cerrar indicaciones">×</button><img src="assets/look-home-192.png?v=20261028" alt="LOOK" width="64" height="64"><h2 id="lookSaveTitle">Guardá tu tarjeta en el inicio</h2><p id="lookSaveIntro"></p><p id="lookSaveBrowserNote" class="look-save-note" hidden></p><ol id="lookSaveSteps"></ol><p id="lookSaveSecurityNote" class="look-save-note"></p><button type="button" id="lookSaveCopy" class="secondary">Copiar enlace de mi tarjeta</button><button type="button" id="lookSaveDone" class="look-save-primary">Entendido</button><p id="lookSaveFeedback" role="status" aria-live="polite"></p>';
       document.body.append(dialog);
       dialog.querySelector('.look-save-close').onclick = closeGuide;
       document.getElementById('lookSaveDone').onclick = closeGuide;
