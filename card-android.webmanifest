@@ -1,0 +1,26 @@
+{
+  "name": "LOOK · Tu tarjeta de beneficios",
+  "short_name": "LOOK",
+  "description": "Abrí tu tarjeta de puntos directamente desde el inicio",
+  "lang": "es-AR",
+  "id": "./?cardhome=1",
+  "start_url": "./?cardhome=1",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#101827",
+  "icons": [
+    {
+      "src": "assets/look-home-192.png?v=20261028",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/look-home-512.png?v=20261028",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

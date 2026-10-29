@@ -24,9 +24,9 @@ const base='http://127.0.0.1:8765/';
  for(const ios of [false,true]){
   const {ctx,page,calls}=await context({ios});const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto(base+'?nfc='+id+'#card='+token);await page.locator('#lookSaveCard').waitFor();
-  assert.match(await page.locator('link[rel=manifest]').getAttribute('href'),/card.webmanifest/);
+  assert.match(await page.locator('link[rel=manifest]').getAttribute('href'),ios?/card.webmanifest/:/card-android.webmanifest/);
   assert.equal(new URL(page.url()).hash,'#card='+token);
-  await page.getByRole('button',{name:'Guardar mi tarjeta en el inicio',exact:true}).click();
+  await page.getByRole('button',{name:'Agregar mi tarjeta al inicio',exact:true}).click();
   assert(await page.locator('#lookSaveGuide').evaluate(e=>e.open));
   assert.match(await page.locator('#lookSaveSteps').innerText(),ios?/Compartir/:/menú/);
   assert(await page.locator('#lookSaveGuide').evaluate(e=>e.getBoundingClientRect().width<=window.innerWidth));
@@ -40,8 +40,19 @@ const base='http://127.0.0.1:8765/';
  
  await fresh.page.locator('#customerName').fill('Cliente prueba');await fresh.page.locator('#customerPhone').fill('5493435000000');
  await fresh.page.locator('#customerForm input[type=checkbox][required]').check();
- await fresh.page.locator('#customerForm button').click();await fresh.page.locator('#lookSaveGuide[open]').waitFor();
- const cdp=await fresh.ctx.newCDPSession(fresh.page);const manifest=await cdp.send('Page.getAppManifest');assert.equal(manifest.errors.length,0);assert.equal(manifest.manifest.startUrl,fresh.page.url());assert.equal(new URL(fresh.page.url()).searchParams.has('ref'),false);assert(new URL(fresh.page.url()).hash.startsWith('#card='));assert.equal(fresh.calls.find(x=>x.path.endsWith('/nfc_register_card_v3')).body.p_referral,'AMIGO');await fresh.ctx.close();console.log('PASS registration offers guide only after success and preserves referral attribution');
+ await fresh.page.locator('#customerForm button').click();await fresh.page.locator('#lookSaveCard').waitFor();
+ assert.equal(await fresh.page.locator('#lookSaveGuide[open]').count(),0);
+ const cdp=await fresh.ctx.newCDPSession(fresh.page);const manifest=await cdp.send('Page.getAppManifest');assert.equal(manifest.errors.length,0);assert.equal(new URL(manifest.manifest.startUrl).search,'?cardhome=1');assert.equal(new URL(fresh.page.url()).searchParams.has('ref'),false);assert(new URL(fresh.page.url()).hash.startsWith('#card='));assert.equal(fresh.calls.find(x=>x.path.endsWith('/nfc_register_card_v3')).body.p_referral,'AMIGO');await fresh.ctx.close();console.log('PASS registration shows one prominent action after success, without popping guide');
+ const native=await context();await native.page.goto(base+'?nfc='+id+'#card='+token);await native.page.locator('#lookSaveCard').waitFor();
+ await native.page.evaluate(()=>{window.__promptCalls=0;const event=new Event('beforeinstallprompt',{cancelable:true});event.prompt=()=>{window.__promptCalls++;return Promise.resolve({outcome:'accepted'})};window.dispatchEvent(event);});
+ await native.page.getByRole('button',{name:'Agregar mi tarjeta al inicio',exact:true}).click();
+ assert.equal(await native.page.evaluate(()=>window.__promptCalls),1);
+ assert.equal(await native.page.locator('#lookSaveGuide[open]').count(),0);
+ const saved=await native.page.evaluate(()=>localStorage.getItem('look_personal_card_home_v1'));
+ assert.equal(new URL(saved).hash,'#card='+token);
+ await native.page.goto(base+'?cardhome=1');await native.page.waitForURL('**/?nfc='+id+'#card='+token);
+ assert.equal(native.calls.filter(x=>x.path.endsWith('/nfc_card')).at(-1).body.p_token,token);
+ await native.ctx.close();console.log('PASS Android one-touch native prompt and installed public launch restore exact card');
  for(const business of ['Look Phone','Ponte Coqueta']){const t=await context({business});await t.page.goto(base+'?nfc='+id+'#card='+token);await t.page.locator('#lookSaveCard').waitFor();await t.page.locator('#lookSaveAgain').click();assert(await t.page.locator('#lookSaveGuide').evaluate(e=>e.open));await t.ctx.close();console.log('PASS shortcut controls in '+business);}
  const auth=await context();await auth.page.goto(base);await auth.page.locator('#auth').waitFor();assert.equal(await auth.page.locator('#lookSaveCard').count(),0);assert.match(await auth.page.locator('link[rel=manifest]').getAttribute('href'),/^manifest.webmanifest/);await auth.ctx.close();console.log('PASS merchant login unchanged');
  await browser.close();server.close();
