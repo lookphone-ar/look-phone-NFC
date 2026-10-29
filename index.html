@@ -4552,11 +4552,26 @@ async function quickVisitAction(e){
   const key='lookphone_pending_'+c.id+'_visit';let event=localStorage.getItem(key);
   try{
     if(!isUUID(event)){event=uuid();localStorage.setItem(key,event);}
-    const amountInput=boxForQuickAmount(c.id),saleAmount=amountInput?.value===''||!amountInput?null:Number(amountInput.value);if(saleAmount===null||!Number.isFinite(saleAmount)||saleAmount<=0||saleAmount>9999999999.99||Math.round(saleAmount*100)/100!==saleAmount)throw new Error('Para sumar 1 punto ingresá un monto de venta mayor a $0 (hasta dos decimales).');await rpc('nfc_record_event',{p_client:c.id,p_kind:'visit',p_event:event,p_sale_amount:saleAmount},true);
-    localStorage.removeItem(key);localStorage.setItem(quickVisitCooldownKey(c.id),String(Date.now()+QUICK_VISIT_COOLDOWN_MS));
+    const amountInput=boxForQuickAmount(c.id),saleAmount=amountInput?.value===''||!amountInput?null:Number(amountInput.value);
+    if(saleAmount===null||!Number.isFinite(saleAmount)||saleAmount<=0||saleAmount>9999999999.99||Math.round(saleAmount*100)/100!==saleAmount)throw new Error('Para sumar 1 punto ingresá un monto de venta mayor a $0 (hasta dos decimales).');
+    const result=await rpc('nfc_record_event',{p_client:c.id,p_kind:'visit',p_event:event,p_sale_amount:saleAmount},true);
+    // El servidor ya acreditó la compra: actualizar en memoria sin volver a
+    // descargar todas las tablas de la aplicación y sin frenar la próxima venta.
+    localStorage.removeItem(key);
+    localStorage.setItem(quickVisitCooldownKey(c.id),String(Date.now()+QUICK_VISIT_COOLDOWN_MS));
+    if(Number.isFinite(Number(result?.points)))c.points=Number(result.points);
+    if(Number.isFinite(Number(result?.visits)))c.visits=Number(result.visits);
+    if(!events.some(x=>x.id===event)){
+      events.unshift({id:event,client_id:c.id,kind:'visit',delta:1,sale_amount:saleAmount,created_at:new Date().toISOString()});
+    }
     if(firstPurchase)enqueueFirstPurchaseCard(c);
-    if(amountInput)amountInput.value='';
-    await loadAdmin();notify('✓ Venta de '+c.name+' confirmada. Se sumó 1 punto'+(saleAmount!==null?' · '+money(saleAmount):'')+'.'+(firstPurchase?' Podés enviar la tarjeta por WhatsApp más tarde.':''));
+    $('quickVisitSearch').value='';
+    renderQuickVisit();
+    if($('statVisits'))$('statVisits').textContent=events.filter(x=>x.kind==='visit').length;
+    if($('statPoints'))$('statPoints').textContent=clients.reduce((sum,x)=>sum+Number(x.points||0),0);
+    if($('clientProfile')?.value===p.id)renderClients();
+    $('quickVisitSearch').focus({preventScroll:true});
+    notify('✓ Venta de '+c.name+' confirmada. +1 punto · '+money(saleAmount)+'.'+(firstPurchase?' Su tarjeta quedó pendiente para WhatsApp.':''));
     setTimeout(()=>renderQuickVisit(),QUICK_VISIT_COOLDOWN_MS+150);
   }catch(err){if(err.status&&err.status<500)localStorage.removeItem(key);notify(friendly(err),true);b.disabled=false;b.textContent=original;}
 }
