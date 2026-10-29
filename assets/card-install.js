@@ -1,7 +1,8 @@
 /* Personal card shortcuts: the private token stays in #card only.
- * Safari stores the current personal URL when added to Home Screen.
- * Android Chrome gets an installable manifest with a public start_url;
- * the installed app restores the chosen card from same-origin localStorage.
+ * iOS home-screen WEB APP may ignore the personal URL and open the
+ * generic merchant sign-in. Use a Safari home-screen BOOKMARK instead:
+ * iOS 26+ users must disable "Open as Web App" when adding it.
+ * Android Chrome retains the native installable PWA + same-origin storage.
  * No personal card credentials go into a manifest request.
  */
 (() => {
@@ -33,10 +34,18 @@
     }
     return; // no ejecutar el login mientras se abre el acceso directo
   }
-  // Switch manifests only for public cards, never for merchant accounts.
+  // Customer shortcut on iPhone must be a Safari bookmark, not the
+  // merchant web app whose launch URL may revert to the sign-in screen.
+  // Older iOS defaults to a bookmark without the standalone metadata.
+  // On iOS 26+, Safari additionally requires "Open as Web App" OFF.
   if (uuid(route.get('nfc'))) {
-    const link = document.querySelector('link[rel="manifest"]');
-    if (link) link.href = cardManifest + '?v=20261029';
+    if (isIOS) {
+      document.querySelector('link[rel="manifest"]')?.remove();
+      document.querySelector('meta[name="apple-mobile-web-app-capable"]')?.setAttribute('content', 'no');
+    } else {
+      const link = document.querySelector('link[rel="manifest"]');
+      if (link) link.href = cardManifest + '?v=20261029';
+    }
   }
   let active = null;
   let previousFocus = null;
@@ -62,7 +71,7 @@
     intro.textContent = 'Guardá el logo de LOOK en tu celular para entrar directo a tu tarjeta de ' + active.business + '.';
     steps.replaceChildren();
     const instructions = isIOS
-      ? ['En Safari, tocá Compartir (cuadrado con flecha ↑).', 'Elegí “Agregar a Inicio”.', 'Dejá activado “Abrir como app web” y tocá “Agregar”.']
+      ? ['Abrí tu tarjeta personal en Safari, no en WhatsApp ni en otra aplicación.', 'Tocá Compartir (cuadrado con flecha ↑) y después “Agregar a Inicio”.', 'MUY IMPORTANTE: desactivá “Abrir como app web” para guardar el enlace de tu tarjeta, no la página de ingreso de LOOK.', 'Tocá “Agregar”. El ícono LOOK abrirá directamente tu tarjeta desde Safari.']
       : isAndroid
       ? ['Abrí el menú del navegador (⋮).', 'Elegí “Agregar a pantalla principal”, “Añadir a pantalla de inicio” o “Instalar aplicación”.', 'Confirmá “Agregar” o “Instalar”. El nombre será LOOK.']
       : ['Abrí esta tarjeta en el navegador de tu celular.', 'En iPhone: Compartir → Agregar a inicio.', 'En Android: menú ⋮ → Agregar a pantalla principal.'];
@@ -70,7 +79,7 @@
       const li = document.createElement('li'); li.textContent = text; steps.append(li);
     }
     browserNote.hidden = !isEmbedded;
-    browserNote.textContent = 'Abriste la tarjeta dentro de otra app. Usá “Copiar enlace” y abrilo en ' + (isIOS ? 'Safari' : 'Chrome') + ' para agregarla al inicio.';
+    browserNote.textContent = 'Abriste la tarjeta dentro de otra app. Tocá “Copiar enlace” y abrilo en ' + (isIOS ? 'Safari' : 'Chrome') + ' para agregarla al inicio.';
     previousFocus = document.activeElement;
     if (!dialog.open) dialog.showModal();
   }
@@ -126,11 +135,14 @@
     // Also restore #card after a reload: iOS must be able to launch the exact
     // card without relying on Safari's localStorage being copied to the web app.
     history.replaceState(null, '', active.url.href);
-    // Re-read the manifest after registration, when the page URL first gains
-    // its private fragment. Only the public merchant ID goes in this request.
-    const manifest = document.querySelector('link[rel="manifest"]');
-    const manifestURL = new URL(cardManifest + '?v=20261029&merchant=' + profile.id, location.href);
-    if (manifest && manifest.href !== manifestURL.href) manifest.href = manifestURL.href;
+    // Android PWA manifest is public and never contains card credentials.
+    // iOS intentionally has no card manifest: always keep Safari's complete
+    // personal URL (#card) for an Add-to-Home-Screen browser bookmark.
+    if (!isIOS) {
+      const manifest = document.querySelector('link[rel="manifest"]');
+      const manifestURL = new URL(cardManifest + '?v=20261029&merchant=' + profile.id, location.href);
+      if (manifest && manifest.href !== manifestURL.href) manifest.href = manifestURL.href;
+    }
     if (standalone() || installed) {
       document.getElementById('lookSaveCard')?.remove();
       document.getElementById('lookSaveAgain')?.remove();
@@ -155,7 +167,7 @@
     if (!document.getElementById('lookSaveGuide')) {
       const dialog = document.createElement('dialog'); dialog.id = 'lookSaveGuide'; dialog.className = 'look-save-guide';
       dialog.setAttribute('aria-labelledby', 'lookSaveTitle');
-      dialog.innerHTML = '<button type="button" class="look-save-close" aria-label="Cerrar indicaciones">×</button><img src="assets/look-home-192.png?v=20261028" alt="LOOK" width="64" height="64"><h2 id="lookSaveTitle">Guardá tu tarjeta en el inicio</h2><p id="lookSaveIntro"></p><p id="lookSaveBrowserNote" class="look-save-note" hidden></p><ol id="lookSaveSteps"></ol><p class="look-save-note">El celular te pedirá confirmar. Tu enlace es personal: guardalo para vos.</p><button type="button" id="lookSaveCopy" class="secondary">Copiar enlace de mi tarjeta</button><button type="button" id="lookSaveDone" class="look-save-primary">Entendido</button><p id="lookSaveFeedback" role="status" aria-live="polite"></p>';
+      dialog.innerHTML = '<button type="button" class="look-save-close" aria-label="Cerrar indicaciones">×</button><img src="assets/look-home-192.png?v=20261028" alt="LOOK" width="64" height="64"><h2 id="lookSaveTitle">Guardá tu tarjeta en el inicio</h2><p id="lookSaveIntro"></p><p id="lookSaveBrowserNote" class="look-save-note" hidden></p><ol id="lookSaveSteps"></ol><p class="look-save-note">En iPhone, desactivá “Abrir como app web”. Si ya tenés un ícono que abre la pantalla INGRESAR, eliminá ese ícono anterior y guardá de nuevo tu tarjeta. El enlace es personal: no lo compartas.</p><button type="button" id="lookSaveCopy" class="secondary">Copiar enlace de mi tarjeta</button><button type="button" id="lookSaveDone" class="look-save-primary">Entendido</button><p id="lookSaveFeedback" role="status" aria-live="polite"></p>';
       document.body.append(dialog);
       dialog.querySelector('.look-save-close').onclick = closeGuide;
       document.getElementById('lookSaveDone').onclick = closeGuide;
