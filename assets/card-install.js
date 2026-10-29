@@ -31,6 +31,7 @@
     } catch {
       location.replace(new URL(location.pathname, location.origin).href);
     }
+    return; // no ejecutar el login mientras se abre el acceso directo
   }
   // Switch manifests only for public cards, never for merchant accounts.
   if (uuid(route.get('nfc'))) {
