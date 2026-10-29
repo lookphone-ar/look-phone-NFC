@@ -24,11 +24,12 @@ const base='http://127.0.0.1:8765/';
  for(const ios of [false,true]){
   const {ctx,page,calls}=await context({ios});const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto(base+'?nfc='+id+'#card='+token);await page.locator('#lookSaveCard').waitFor();
-  assert.match(await page.locator('link[rel=manifest]').getAttribute('href'),ios?/card.webmanifest/:/card-android.webmanifest/);
+  if(ios){assert.equal(await page.locator('link[rel=manifest]').count(),0);assert.equal(await page.locator('meta[name="apple-mobile-web-app-capable"]').getAttribute('content'),'no');}else{assert.match(await page.locator('link[rel=manifest]').getAttribute('href'),/card-android.webmanifest/);}
   assert.equal(new URL(page.url()).hash,'#card='+token);
   await page.getByRole('button',{name:'Agregar mi tarjeta al inicio',exact:true}).click();
   assert(await page.locator('#lookSaveGuide').evaluate(e=>e.open));
   assert.match(await page.locator('#lookSaveSteps').innerText(),ios?/Compartir/:/menú/);
+  if(ios){assert.match(await page.locator('#lookSaveSteps').innerText(),/desactivá/);assert.match(await page.locator('#lookSaveSecurityNote').innerText(),/Eliminá ese acceso viejo/);}
   assert(await page.locator('#lookSaveGuide').evaluate(e=>e.getBoundingClientRect().width<=window.innerWidth));
   
   await page.getByRole('button',{name:'Entendido',exact:true}).click();
