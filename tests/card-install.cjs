@@ -26,6 +26,16 @@ const base='http://127.0.0.1:8765/';
   await page.goto(base+'?nfc='+id+'#card='+token);await page.locator('#lookSaveCard').waitFor();
   if(ios){assert.equal(await page.locator('link[rel=manifest]').count(),0);assert.equal(await page.locator('meta[name="apple-mobile-web-app-capable"]').getAttribute('content'),'no');}else{assert.match(await page.locator('link[rel=manifest]').getAttribute('href'),/card-android.webmanifest/);}
   assert.equal(new URL(page.url()).hash,'#card='+token);
+  const wa=page.locator('#lookSendWhatsapp');await wa.waitFor();
+  const waURL=new URL(await wa.getAttribute('href'));
+  assert.equal(waURL.origin,'https://wa.me');
+  assert.equal(waURL.pathname,'/');
+  const message=waURL.searchParams.get('text');
+  assert.match(message,/Comercio de prueba/);
+  assert.match(message,/Guardá este mensaje/);
+  assert(message.includes('#card='+token),'WhatsApp must include personal card link');
+  assert.equal(await page.locator('#lookWhatsappBanner').getAttribute('href'),waURL.href);
+  assert.equal(await page.locator('#lookWhatsappHint').isVisible(),true);
   await page.getByRole('button',{name:'Agregar mi tarjeta al inicio',exact:true}).click();
   assert(await page.locator('#lookSaveGuide').evaluate(e=>e.open));
   assert.match(await page.locator('#lookSaveSteps').innerText(),ios?/Compartir/:/menú/);
@@ -36,12 +46,14 @@ const base='http://127.0.0.1:8765/';
   await page.reload();await page.locator('#lookSaveCard').waitFor();assert.equal(calls.filter(x=>x.path.endsWith('/nfc_card')).at(-1).body.p_token,token);
   assert.equal(errors.length,0,errors.join('\n'));await ctx.close();console.log('PASS',ios?'iPhone instructions + personal URL reload':'Android instructions + personal URL reload');
  }
- const standalone=await context({ios:true,standalone:true});await standalone.page.goto(base+'?nfc='+id+'#card='+token);await standalone.page.locator('#cardState').waitFor();assert.equal(await standalone.page.locator('#lookSaveCard').count(),0);assert.equal(standalone.calls.find(x=>x.path.endsWith('/nfc_card')).body.p_token,token);await standalone.ctx.close();console.log('PASS isolated home-screen context opens same card and hides install prompt');
+ const standalone=await context({ios:true,standalone:true});await standalone.page.goto(base+'?nfc='+id+'#card='+token);await standalone.page.locator('#cardState').waitFor();assert.equal(await standalone.page.locator('#lookSaveCard').count(),0);await standalone.page.locator('#lookSendWhatsapp').waitFor();assert.equal(standalone.calls.find(x=>x.path.endsWith('/nfc_card')).body.p_token,token);await standalone.ctx.close();console.log('PASS isolated home-screen context opens same card and hides install prompt');
  const fresh=await context({registered:false});await fresh.page.goto(base+'?nfc='+id+'&ref=AMIGO');await fresh.page.locator('#customerForm').waitFor();assert.equal(await fresh.page.locator('#lookSaveCard').count(),0);
  
  await fresh.page.locator('#customerName').fill('Cliente prueba');await fresh.page.locator('#customerPhone').fill('5493435000000');
  await fresh.page.locator('#customerForm input[type=checkbox][required]').check();
  await fresh.page.locator('#customerForm button').click();await fresh.page.locator('#lookSaveCard').waitFor();
+ await fresh.page.locator('#lookWhatsappBanner').waitFor();
+ assert.match((new URL(await fresh.page.locator('#lookWhatsappBanner').getAttribute('href'))).searchParams.get('text'),/Comercio de prueba/);
  assert.equal(await fresh.page.locator('#lookSaveGuide[open]').count(),0);
  const cdp=await fresh.ctx.newCDPSession(fresh.page);const manifest=await cdp.send('Page.getAppManifest');assert.equal(manifest.errors.length,0);assert.equal(new URL(manifest.manifest.startUrl).search,'?cardhome=1');assert.equal(new URL(fresh.page.url()).searchParams.has('ref'),false);assert(new URL(fresh.page.url()).hash.startsWith('#card='));assert.equal(fresh.calls.find(x=>x.path.endsWith('/nfc_register_card_v3')).body.p_referral,'AMIGO');await fresh.ctx.close();console.log('PASS registration shows one prominent action after success, without popping guide');
  const native=await context();await native.page.goto(base+'?nfc='+id+'#card='+token);await native.page.locator('#lookSaveCard').waitFor();
@@ -54,7 +66,7 @@ const base='http://127.0.0.1:8765/';
  await native.page.goto(base+'?cardhome=1');await native.page.waitForURL('**/?nfc='+id+'#card='+token);
  assert.equal(native.calls.filter(x=>x.path.endsWith('/nfc_card')).at(-1).body.p_token,token);
  await native.ctx.close();console.log('PASS Android one-touch native prompt and installed public launch restore exact card');
- for(const business of ['Look Phone','Ponte Coqueta']){const t=await context({business});await t.page.goto(base+'?nfc='+id+'#card='+token);await t.page.locator('#lookSaveCard').waitFor();await t.page.locator('#lookSaveAgain').click();assert(await t.page.locator('#lookSaveGuide').evaluate(e=>e.open));await t.ctx.close();console.log('PASS shortcut controls in '+business);}
+ for(const business of ['Look Phone','Ponte Coqueta']){const t=await context({business});await t.page.goto(base+'?nfc='+id+'#card='+token);await t.page.locator('#lookSaveCard').waitFor();const bmsg=(new URL(await t.page.locator('#lookSendWhatsapp').getAttribute('href'))).searchParams.get('text');assert(bmsg.includes(business));await t.page.locator('#lookSaveAgain').click();assert(await t.page.locator('#lookSaveGuide').evaluate(e=>e.open));await t.ctx.close();console.log('PASS shortcut controls in '+business);}
  const auth=await context();await auth.page.goto(base);await auth.page.locator('#auth').waitFor();assert.equal(await auth.page.locator('#lookSaveCard').count(),0);assert.match(await auth.page.locator('link[rel=manifest]').getAttribute('href'),/^manifest.webmanifest/);await auth.ctx.close();console.log('PASS merchant login unchanged');
  await browser.close();server.close();
 })().catch(e=>{console.error(e);process.exit(1)});

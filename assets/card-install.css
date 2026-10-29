@@ -7,3 +7,14 @@
 .look-save-guide{position:fixed;inset:0;width:calc(100% - 32px);max-width:430px;max-height:calc(100dvh - 40px);overflow:auto;padding:24px;border:0;border-radius:22px;background:#fff;color:#10243e;box-shadow:0 20px 70px #0005;font-family:inherit}
 .look-save-guide::backdrop{background:#10182799}.look-save-guide>img{display:block;border-radius:15px;margin:0 auto 16px}.look-save-guide h2{margin:0 20px 10px;font-size:22px;line-height:1.25;text-align:center}.look-save-guide p{font-size:14px;line-height:1.5;margin:10px 0}.look-save-guide ol{padding-left:24px;margin:18px 0}.look-save-guide li{padding-left:3px;margin:12px 0;font-size:15px;line-height:1.45}
 .look-save-guide .look-save-close{position:absolute;top:10px;right:10px;min-height:36px;width:36px;padding:0;background:#eef2f6;color:#334155;border-radius:50%;font-size:25px}.look-save-guide .look-save-note{padding:10px;border-radius:10px;background:#f2f6fb;color:#52647b;font-size:12px}.look-save-guide>button:not(.look-save-close){width:100%;min-height:44px;margin-top:8px}.look-save-guide #lookSaveFeedback{min-height:0;margin-bottom:0;color:#147d57;font-size:13px}
+
+/* WhatsApp is the easiest way to keep a personal LOOK card close at hand. */
+.look-save-whatsapp{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:48px;padding:12px 14px;border-radius:11px;background:#16b95d!important;color:#fff!important;font-family:inherit;font-weight:750;font-size:14px;line-height:1.3;text-decoration:none!important;text-align:center;box-shadow:0 3px 12px #04733424}
+.look-save-whatsapp::before{content:"✆";font-size:20px;line-height:1}
+.look-save-whatsapp:focus-visible{outline:3px solid #126fde;outline-offset:3px}
+.look-save-whatsapp:hover{background:#109b4c!important;color:#fff!important}
+.look-save-card .look-save-whatsapp,.look-save-card .look-share-hint,.look-save-card .look-save-home{grid-column:1/-1}
+.look-save-card .look-share-hint{margin:-3px 3px 0;font-size:11px;line-height:1.4;color:#4e5e72;text-align:center}
+.look-save-card .look-save-home{background:#e6f0fd!important;color:#19529c!important;border:1px solid #c4d9f3!important;min-height:40px!important;padding:9px 12px!important}
+#customer #cardActions #lookSendWhatsapp{grid-column:1/-1!important;min-width:0;width:100%!important;min-height:48px}
+#customer #cardActions #lookWhatsappHint{grid-column:1/-1!important;display:block;margin:0 1px 8px;font-size:11px;line-height:1.45;color:#53677b;text-align:center}

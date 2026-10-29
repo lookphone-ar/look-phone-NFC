@@ -115,7 +115,7 @@
     if (banner) {
       banner.hidden = false;
       banner.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      banner.querySelector('.look-save-primary')?.focus({ preventScroll: true });
+      banner.querySelector('#lookWhatsappBanner')?.focus({ preventScroll: true });
     }
   }
   window.addEventListener('beforeinstallprompt', event => {
@@ -131,6 +131,24 @@
     document.getElementById('lookSaveAgain')?.remove();
     closeGuide();
   });
+  function whatsappLink() {
+    if (!active) return '';
+    // The #card fragment is the customer's private card key. It must be part
+    // of the WhatsApp message so the card opens without logging in.
+    const message = 'Mi tarjeta de beneficios de ' + active.business + ' en LOOK.\n' +
+      'Guardá este mensaje para abrirla cuando quieras:\n' +
+      active.url.href + '\n' +
+      'Este enlace es personal, no lo reenvíes.';
+    // WhatsApp presents a recipient picker; the customer selects their own chat.
+    return 'https://wa.me/?text=' + encodeURIComponent(message);
+  }
+  function configureWhatsAppLink(anchor) {
+    if (!anchor || !active) return;
+    anchor.href = whatsappLink();
+    anchor.target = '_blank';
+    anchor.rel = 'noopener noreferrer';
+    anchor.setAttribute('aria-label', 'Enviar mi tarjeta de beneficios por WhatsApp a mi propio chat');
+  }
   function mount(profile, token) {
     const customer = document.getElementById('customer');
     const currentRoute = new URLSearchParams(location.search);
@@ -147,6 +165,24 @@
       const manifestURL = new URL(cardManifest + '?v=20261029&merchant=' + profile.id, location.href);
       if (manifest && manifest.href !== manifestURL.href) manifest.href = manifestURL.href;
     }
+    // Available for every registered customer, including standalone web apps.
+    const actions = document.getElementById('cardActions');
+    if (actions) {
+      let share = document.getElementById('lookSendWhatsapp');
+      if (!share) {
+        share = document.createElement('a');
+        share.id = 'lookSendWhatsapp';
+        share.className = 'look-save-whatsapp';
+        share.textContent = 'Enviar mi tarjeta por WhatsApp';
+        const hint = document.createElement('small');
+        hint.id = 'lookWhatsappHint';
+        hint.className = 'look-share-hint';
+        hint.textContent = 'Elegí «Mensaje a ti mismo» en WhatsApp y enviá el mensaje. Tu enlace es privado.';
+        actions.prepend(hint);
+        actions.prepend(share);
+      }
+      configureWhatsAppLink(share);
+    }
     if (standalone() || installed) {
       document.getElementById('lookSaveCard')?.remove();
       document.getElementById('lookSaveAgain')?.remove();
@@ -157,12 +193,12 @@
       const banner = document.createElement('section');
       banner.id = 'lookSaveCard'; banner.className = 'look-save-card';
       banner.setAttribute('aria-label', 'Guardar tu tarjeta');
-      banner.innerHTML = '<img src="assets/look-home-192.png?v=20261028" alt="" width="48" height="48"><div><strong>Tu tarjeta, siempre a mano</strong><p>Entrá con un toque, sin volver a registrarte.</p></div><button type="button" class="look-save-dismiss" aria-label="Ocultar sugerencia de guardar">×</button><button type="button" class="look-save-primary">Agregar mi tarjeta al inicio</button>';
+      banner.innerHTML = '<img src="assets/look-home-192.png?v=20261028" alt="" width="48" height="48"><div><strong>Tu tarjeta, siempre a mano</strong><p>Mandátela a tu propio WhatsApp y abrila cuando quieras.</p></div><button type="button" class="look-save-dismiss" aria-label="Ocultar sugerencia de guardar">×</button><a class="look-save-whatsapp" id="lookWhatsappBanner">Enviar mi tarjeta por WhatsApp</a><small class="look-share-hint">En WhatsApp elegí «Mensaje a ti mismo» y tocá Enviar.</small><button type="button" class="look-save-primary look-save-home">Agregar al inicio (opcional)</button>';
       customer.prepend(banner);
+      configureWhatsAppLink(banner.querySelector('#lookWhatsappBanner'));
       banner.querySelector('.look-save-primary').onclick = install;
       banner.querySelector('.look-save-dismiss').onclick = () => { banner.hidden = true; };
     }
-    const actions = document.getElementById('cardActions');
     if (actions && !document.getElementById('lookSaveAgain')) {
       const button = document.createElement('button');
       button.id = 'lookSaveAgain'; button.type = 'button'; button.className = 'secondary';
