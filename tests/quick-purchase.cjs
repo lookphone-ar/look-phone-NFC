@@ -31,6 +31,15 @@ const fs=require('node:fs'),path=require('node:path');
  await page.locator('[data-quick-visit]').click();
  assert.equal(await page.evaluate(()=>sales.length),1);assert.equal(await page.evaluate(()=>sales[0].args.p_sale_amount),12500);assert.equal(await page.evaluate(()=>sales[0].args.p_client), '22222222-2222-4222-8222-222222222222');
  assert(await page.locator('[data-quick-visit]').isDisabled());
+ await page.waitForFunction(()=>document.querySelector('[data-quick-amount="22222222-2222-4222-8222-222222222222"]')?.value==='');
+ assert.equal(await page.locator('[data-quick-amount="22222222-2222-4222-8222-222222222222"]').getAttribute('placeholder'),'Importe 
+ console.log('PASS new remote zero-point card appears on purchase focus, newest first, all matching names, phone lookup, amount preserved and purchase sent once');
+ await page.evaluate(async()=>{
+   let finish;readAll=()=>new Promise(r=>finish=r);const pending=refreshQuickVisitClients();profiles=[{id:'another',business:'Otro'}];clients=[];finish([newClient]);await pending;if(clients.length)throw Error('Stale merchant response applied');
+ });console.log('PASS late response cannot cross merchant scope');
+ }finally{await browser.close();server.close();}
+})().catch(e=>{console.error(e);process.exit(1)});
+);
  assert(await page.evaluate(()=>readPaths.every(p=>p.includes('profile_id=eq.'+testProfile))));
  console.log('PASS new remote zero-point card appears on purchase focus, newest first, all matching names, phone lookup, amount preserved and purchase sent once');
  await page.evaluate(async()=>{
