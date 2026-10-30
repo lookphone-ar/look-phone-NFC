@@ -4033,7 +4033,7 @@ function renderPlatformClientGroups(){
  $('platformClientSummary').textContent=visiblePlatformClientGroups.length?
   visiblePlatformClientGroups.length.toLocaleString('es-AR')+' comercios · '+total.toLocaleString('es-AR')+' clientes. Desplegá un comercio para ver los detalles.':
   'No hay comercios o clientes que coincidan con la búsqueda.';
- $('visiblePlatformClientGroups').innerHTML=visiblePlatformClientGroups.length?visiblePlatformClientGroups.map(g=>{
+ $('platformClientGroups').innerHTML=visiblePlatformClientGroups.length?visiblePlatformClientGroups.map(g=>{
   const profileId=String(g.profile_id||''),expanded=platformClientExpanded.has(profileId);
   const detail=platformClientDetails.get(profileId)||{rows:[],total:0,offset:0,loaded:false,loading:false,error:''};
   return '<article class="card platform-business-group"><div class="platform-business-head"><div><strong class="platform-business-name">'+esc(g.business||'Comercio sin nombre')+'</strong><small>'+esc(g.merchant_email||'Sin correo de cuenta')+'</small></div><span class="platform-business-count">'+Number(g.client_count||0).toLocaleString('es-AR')+' clientes</span><button type="button" class="secondary" data-platform-toggle-profile="'+esc(profileId)+'" aria-expanded="'+String(expanded)+'" aria-controls="platform-business-clients-'+esc(profileId)+'">'+(expanded?'Ocultar detalle':'Ver clientes')+'</button></div><div class="platform-business-details" id="platform-business-clients-'+esc(profileId)+'" '+(expanded?'':'hidden')+'>'+renderPlatformBusinessClientDetails(profileId,detail)+'</div></article>';
