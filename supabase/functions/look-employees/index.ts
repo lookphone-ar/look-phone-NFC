@@ -126,7 +126,7 @@ Deno.serve(async(req:Request)=>{
   if(action==="search"){
     const needle=String(body.query||"").trim().slice(0,60).replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ _-]/g,"");
     const search=needle?"&or="+encodeURIComponent("(name.ilike.*"+needle+"*,phone.ilike.*"+needle+"*)"):"";
-    const rows=await db("nfc_clients?profile_id=eq."+employee.profile_id+search+"&select=id,name,phone,points,visits&order=name.asc&limit=40");
+    const rows=await db("nfc_clients?profile_id=eq."+employee.profile_id+"&archived_at=is.null"+search+"&select=id,name,phone,points,visits&order=name.asc&limit=40");
     const prof=await db("nfc_profiles?id=eq."+employee.profile_id+"&select=goal,reward&limit=1");
     return ret({clients:rows.map((c:Data)=>({...c,goal:prof[0].goal,reward:prof[0].reward}))});
   }
