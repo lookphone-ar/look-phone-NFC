@@ -3229,6 +3229,47 @@ body.app-starting{display:none!important}
 #admin .look-crow-archived .look-cactions>button{width:auto!important;min-width:0!important;max-width:110px!important;min-height:34px!important;height:34px!important;padding:5px 8px!important;font-size:11px!important;white-space:nowrap!important}
 #admin .look-cmenu>.look-cdanger{grid-column:1/-1;background:#fff1f1!important;color:#9f2b30!important;border:1px solid #f1babb!important}
 @media(max-width:650px){#admin .look-client-archive-toggle{font-size:10px;margin:0 2px}}
+
+/* LOOK · Administración de comercios compacta y desplegable */
+#platform .look-platform-filters{padding:10px 12px!important}
+#platform .look-platform-hidden-toggle{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:550;margin:10px 0 0;color:#51657a}
+#platform .look-platform-hidden-toggle input{width:16px;height:16px;min-height:0;margin:0}
+#platform .platform-accounts{display:grid;gap:5px!important}
+#platform .look-platform-compact-row{display:block!important;padding:7px 10px!important;margin:0!important;border:1px solid #e0e7f0;border-radius:10px;min-width:0;background:#fff}
+#platform .look-platform-row-head{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:9px;min-height:43px}
+#platform .look-platform-ident{display:flex;flex-direction:column;min-width:0;gap:2px}
+#platform .look-platform-ident>strong{font-size:13px;line-height:1.2;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+#platform .look-platform-ident>small{font-size:11px;line-height:1.2;color:#687789;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+#platform .look-platform-status{font-size:10px!important;padding:5px 7px!important;white-space:nowrap;max-width:100px;overflow:hidden;text-overflow:ellipsis}
+#platform .look-platform-row-actions{display:flex;align-items:center;gap:5px;justify-content:flex-end}
+#platform .look-platform-row-actions>button,#platform .look-platform-more>summary{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;width:auto;min-width:0;min-height:33px!important;height:33px!important;font-size:11px!important;line-height:1!important;padding:6px 9px!important;border-radius:7px!important;white-space:nowrap!important;cursor:pointer;margin:0!important}
+#platform .look-platform-more{position:static;min-width:0}
+#platform .look-platform-more>summary{list-style:none;background:#eef3fa;color:#25435e;border:1px solid #dce5f0;font-weight:700}
+#platform .look-platform-more>summary::-webkit-details-marker{display:none}
+#platform .look-platform-more>summary::marker{content:''}
+#platform .look-platform-more[open] .look-platform-details{display:block}
+#platform .look-platform-details{display:block;position:absolute;left:9px;right:9px;top:calc(100% + 4px);z-index:100;background:white;padding:13px;border:1px solid #d9e3ed;box-shadow:0 12px 32px #111e3530;border-radius:11px;max-height:min(78vh,650px);overflow:auto}
+#platform .look-platform-compact-row:has(.look-platform-more[open]){position:relative;z-index:100}
+#platform .look-platform-detailbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:5px;margin-bottom:9px;font-size:12px}
+#platform .look-platform-detailbar>small{font-size:11px;color:#687789}
+#platform .look-platform-details .platform-account-contact{margin:7px 0!important}
+#platform .look-platform-detail-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:7px;margin:10px 0 0}
+#platform .look-platform-detail-actions>button{font-size:12px!important;min-height:36px!important;padding:7px 10px!important;width:auto!important}
+#platform .look-platform-remove{background:#fff3f2!important;color:#9b3230!important;border:1px solid #efcac6!important}
+#platform .look-platform-short{display:none}
+@media(max-width:650px){
+ #platform .look-platform-compact-row{padding:6px 7px!important}
+ #platform .look-platform-row-head{grid-template-columns:minmax(0,1fr) auto auto;gap:5px;min-height:41px}
+ #platform .look-platform-ident>strong{font-size:12px}
+ #platform .look-platform-ident>small{font-size:10px}
+ #platform .look-platform-ident>.look-platform-billing{display:none}
+ #platform .look-platform-status{font-size:9px!important;padding:4px 5px!important;max-width:73px}
+ #platform .look-platform-row-actions{gap:3px}
+ #platform .look-platform-label{display:none}
+ #platform .look-platform-short{display:inline;font-size:15px}
+ #platform .look-platform-row-actions>button,#platform .look-platform-more>summary{min-width:30px!important;width:30px!important;height:32px!important;min-height:32px!important;padding:3px!important}
+ #platform .look-platform-details{left:4px;right:4px;padding:9px;max-height:70vh}
+}
 </style>
 </head>
 <body class="app-starting">
@@ -3352,7 +3393,7 @@ body.app-starting{display:none!important}
   <div class="section-heading"><span class="eyebrow">LOOK</span><h1>Administración de comercios</h1><p class="muted">Cuentas, estado y suscripciones de la plataforma.</p></div>
   <section class="card look-support-admin" id="lookSupportAdminPanel"><div class="row spread"><h2 style="margin:0">Soporte de comercios</h2><button type="button" class="secondary" id="lookSupportAdminReload">Actualizar consultas</button></div><p class="muted">Respondé cada consulta desde aquí. El comercio verá tu respuesta en el Centro de ayuda.</p><div id="lookSupportAdminTickets" class="look-support-items"></div></section><div id="platformSummary" class="platform-summary"></div>
   <div class="row spread"><h2>Comercios</h2><button id="downloadPlatformAccounts" type="button" class="secondary">Descargar comercios CSV</button></div>
-  <div class="card"><label for="platformSearch">Buscar comercio o correo</label><input id="platformSearch" type="search" placeholder="Nombre del comercio o email"></div>
+  <div class="card look-platform-filters"><label for="platformSearch">Buscar comercio o correo</label><input id="platformSearch" type="search" placeholder="Nombre del comercio o email"><label class="look-platform-hidden-toggle"><input id="platformShowHidden" type="checkbox"> Ver comercios ocultos (<span id="platformHiddenCount">0</span>)</label></div>
   <div class="card platform-whatsapp-controls"><h3>Contacto de comercios por WhatsApp</h3><p class="muted">Solo para avisos de suscripción e información de LOOK. Cada chat se abre con el texto preparado; el envío se confirma manualmente en WhatsApp.</p><label for="platformNoticeType">Tipo de mensaje</label><select id="platformNoticeType"><option value="subscription">Vencimiento de suscripción</option><option value="look_info">Información de LOOK</option></select><label for="platformNoticeMessage">Texto para información de LOOK</label><textarea id="platformNoticeMessage" rows="3" maxlength="700" placeholder="Escribí un aviso de servicio de LOOK. Se abrirá para revisar y confirmar en WhatsApp."></textarea><div class="row"><button id="startPlatformWhatsApp" type="button">Contactar comercios uno por uno</button><button id="nextPlatformWhatsApp" type="button" class="secondary" hidden>Preparar próximo</button></div><p id="platformWhatsAppProgress" class="muted" aria-live="polite"></p></div>
   <div id="platformAccounts" class="platform-accounts" aria-live="polite"></div>
   <div class="platform-data-heading"><div><h2>Base general de clientes</h2><p class="muted">Vista exclusiva de administración. Los comercios siguen viendo solo sus propios clientes.</p></div><div class="platform-export-actions"><button id="downloadPlatformClients" type="button">Descargar clientes CSV</button></div></div>
@@ -3392,7 +3433,7 @@ const uuid=()=>crypto.randomUUID();
 const isUUID=s=>/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s||'');
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const digits=s=>s.replace(/\D/g,'');
-let session=null,profiles=[],clients=[],archivedClients=[],events=[],contactEvents=[],rewardTiers=[],coupons=[],couponRedemptions=[],editing=null,signup=false,customerProfile=null,customerCardState=null,customerExtrasState=null,activeCampaign='miss',campaignIndex=0,contactMode='ready',isPlatformAdmin=false,platformAccounts=[],platformClientGroups=[],platformClientExpanded=new Set(),platformClientDetails=new Map(),platformWhatsappQueue=[],platformWhatsappIndex=0;
+let session=null,profiles=[],clients=[],archivedClients=[],events=[],contactEvents=[],rewardTiers=[],coupons=[],couponRedemptions=[],editing=null,signup=false,customerProfile=null,customerCardState=null,customerExtrasState=null,activeCampaign='miss',campaignIndex=0,contactMode='ready',isPlatformAdmin=false,platformAccounts=[],platformHiddenAccounts=[],platformClientGroups=[],platformClientExpanded=new Set(),platformClientDetails=new Map(),platformWhatsappQueue=[],platformWhatsappIndex=0;
 try{session=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');}catch{}
 
 let lookStaffContext=null,staffDisplayedClients=[],onboardStep=0,staffSearchTimer;
@@ -3933,11 +3974,13 @@ function lookBrandMarkSvg(){return '<img class="look-brand-icon" src="assets/loo
 function currentProfileId(){const saved=localStorage.getItem(ACTIVE_PROFILE_KEY);if(saved&&profiles.some(p=>p.id===saved))return saved;return (profiles.find(p=>p.business==='Look Phone')||profiles[0])?.id||'';}
 async function switchActiveProfile(id){if(!profiles.some(p=>p.id===id))return;localStorage.setItem(ACTIVE_PROFILE_KEY,id);if($('editClientForm'))$('editClientForm').hidden=true;editingClient=null;closeClientHistory();await loadAdmin();}
 async function loadPlatform(){
- const [accounts,groups]=await Promise.all([
+ const [accounts,groups,hidden]=await Promise.all([
   rpc('nfc_platform_accounts',{},true),
-  rpc('nfc_platform_client_groups',{p_search:''},true)
+  rpc('nfc_platform_client_groups',{p_search:''},true),
+  rpc('nfc_platform_hidden_accounts',{},true)
  ]);
  platformAccounts=Array.isArray(accounts)?accounts:[];
+ platformHiddenAccounts=Array.isArray(hidden)?hidden:[];
  platformClientGroups=Array.isArray(groups)?groups:[];
  platformClientExpanded.clear();
  platformClientDetails.clear();
@@ -4035,14 +4078,26 @@ async function downloadPlatformClientsCsv(button){
 function platformWhatsAppDigits(value){const n=String(value||'').replace(/\D/g,'');return /^[0-9]{8,20}$/.test(n)?n:'';}
 function platformWhatsAppMessage(account){const name=String(account.business||'comercio');if($('platformNoticeType')?.value==='subscription'){const due=account.period_ends_at?new Date(account.period_ends_at+'T00:00:00').toLocaleDateString('es-AR'):'próximamente';return 'Hola '+name+', te contactamos desde LOOK para avisarte que tu período de suscripción vence '+due+'. Si ya realizaste el pago, podés ignorar este mensaje. Si necesitás ayuda, respondé por acá.';}const custom=$('platformNoticeMessage')?.value.trim();return custom||('Hola '+name+', te escribimos desde LOOK para compartir información importante sobre tu cuenta. Si necesitás ayuda, respondé por acá.');}
 function platformWhatsAppHref(account){const phone=platformWhatsAppDigits(account.whatsapp);return phone?'https://wa.me/'+phone+'?text='+encodeURIComponent(platformWhatsAppMessage(account)):'';}
-function startPlatformWhatsAppSequence(){const kind=$('platformNoticeType').value;platformWhatsappQueue=platformAccounts.filter(a=>platformWhatsAppDigits(a.whatsapp)&&!(kind==='subscription'&&a.comped_access));platformWhatsappIndex=0;if(!platformWhatsappQueue.length){$('platformWhatsAppProgress').textContent='No hay comercios con WhatsApp disponible para este tipo de aviso.';$('nextPlatformWhatsApp').hidden=true;return;}$('nextPlatformWhatsApp').hidden=false;$('nextPlatformWhatsApp').textContent='Abrir primer WhatsApp';openNextPlatformWhatsApp();}
+function startPlatformWhatsAppSequence(){const kind=$('platformNoticeType').value;platformWhatsappQueue=platformAccounts.filter(a=>!platformAccountIsHidden(a)&&platformWhatsAppDigits(a.whatsapp)&&!(kind==='subscription'&&a.comped_access));platformWhatsappIndex=0;if(!platformWhatsappQueue.length){$('platformWhatsAppProgress').textContent='No hay comercios con WhatsApp disponible para este tipo de aviso.';$('nextPlatformWhatsApp').hidden=true;return;}$('nextPlatformWhatsApp').hidden=false;$('nextPlatformWhatsApp').textContent='Abrir primer WhatsApp';openNextPlatformWhatsApp();}
 function openNextPlatformWhatsApp(){if(platformWhatsappIndex>=platformWhatsappQueue.length){$('platformWhatsAppProgress').textContent='Recorrido terminado. Se abrieron '+platformWhatsappQueue.length+' chats; el envío de cada mensaje queda a confirmar en WhatsApp.';$('nextPlatformWhatsApp').hidden=true;return;}const account=platformWhatsappQueue[platformWhatsappIndex];const href=platformWhatsAppHref(account);if(!href){platformWhatsappIndex++;openNextPlatformWhatsApp();return;}window.open(href,'_blank','noopener,noreferrer');platformWhatsappIndex++;$('platformWhatsAppProgress').textContent='Preparado '+platformWhatsappIndex+' de '+platformWhatsappQueue.length+': '+(account.business||'Comercio')+'. Revisá y confirmá el envío en WhatsApp; después volvé y abrí el siguiente.';$('nextPlatformWhatsApp').textContent=platformWhatsappIndex<platformWhatsappQueue.length?'Abrir siguiente WhatsApp ('+(platformWhatsappIndex+1)+' de '+platformWhatsappQueue.length+')':'Ver resumen';}
+function platformAccountIsHidden(a){
+ if(!a)return false;
+ const row=platformHiddenAccounts.find(x=>x.owner_id===a.owner_id);
+ if(!row)return false;
+ // Si entra un pago nuevo DESPUÉS de ocultarlo, vuelve a ser visible.
+ const paid=Date.parse(a.last_paid_at||''),hidden=Date.parse(row.hidden_at||'');
+ return !(a.status==='active'&&Number.isFinite(paid)&&Number.isFinite(hidden)&&paid>hidden);
+}
 function renderPlatformAccounts(){
  const query=($('platformSearch')?.value||'').trim().toLocaleLowerCase('es');
- const rows=platformAccounts.filter(a=>(String(a.business||'')+' '+String(a.email||'')).toLocaleLowerCase('es').includes(query));
+ const hiddenTotal=platformAccounts.filter(platformAccountIsHidden).length;
+ if($('platformHiddenCount'))$('platformHiddenCount').textContent=hiddenTotal;
+ const showingHidden=$('platformShowHidden')?.checked===true;
+ const rows=platformAccounts.filter(a=>platformAccountIsHidden(a)===showingHidden
+   && (String(a.business||'')+' '+String(a.email||'')).toLocaleLowerCase('es').includes(query));
  const active=platformAccounts.filter(a=>a.status==='active'||a.status==='trial').length;
  const suspended=platformAccounts.filter(a=>a.status==='suspended'||a.status==='cancelled').length;
- $('platformSummary').innerHTML='<div class="card"><small>Comercios registrados</small><strong>'+platformAccounts.length+'</strong></div><div class="card"><small>Con acceso</small><strong>'+active+'</strong></div><div class="card"><small>Suspendidos o cancelados</small><strong>'+suspended+'</strong></div>';
+ $('platformSummary').innerHTML='<div class="card"><small>Comercios registrados</small><strong>'+platformAccounts.length+'</strong></div><div class="card"><small>Con acceso</small><strong>'+active+'</strong></div><div class="card"><small>Suspendidos o cancelados</small><strong>'+suspended+'</strong></div><div class="card"><small>Ocultos del panel</small><strong>'+hiddenTotal+'</strong></div>';
  const labels={trial:'Prueba gratuita',active:'Activo',suspended:'Suspendido',cancelled:'Cancelado'};
  const billingLabels={not_configured:'Sin método elegido',pending:'Pendiente de Mercado Pago',authorized:'Suscripción automática activa',past_due:'Pago pendiente',paused:'Suscripción pausada',cancelled:'Suscripción cancelada',manual_pending:'Pago manual solicitado',manual_paid:'Pago manual confirmado',comped:'Regalo gratuito ilimitado'};
  const methods={mercadopago:'Mercado Pago',cash:'Efectivo',transfer:'Transferencia',comped:'LOOK'};
@@ -4052,8 +4107,62 @@ function renderPlatformAccounts(){
   const preview=new URL(location.pathname,location.origin);preview.searchParams.set('preview',a.profile_id);
   return '<section class="platform-nfc-tools"><strong>URL de tarjeta / NFC</strong><div class="platform-nfc-url"><input type="text" aria-label="URL pública para programar NFC" readonly value="'+esc(u.href)+'"><button type="button" class="secondary" data-platform-copy-nfc="'+esc(a.profile_id)+'">Copiar URL</button></div><div class="platform-nfc-buttons"><a class="button secondary" href="'+esc(preview.href)+'" target="_blank" rel="noopener noreferrer">Ver tarjeta de puntos</a><a class="button secondary" href="'+esc(u.href)+'" target="_blank" rel="noopener noreferrer">Abrir enlace NFC</a><button type="button" class="secondary" data-platform-qr-open="'+esc(a.profile_id)+'">Ver / descargar QR 3D</button></div><small>El enlace NFC abre el registro público de ese comercio. La vista previa muestra el diseño con puntos de ejemplo, sin crear un cliente.</small><div class="platform-qr-3d" data-platform-qr-3d hidden><strong>QR de '+esc(a.business||'este comercio')+' para impresión 3D</strong><div class="platform-qr-preview" data-platform-qr-preview></div><div class="platform-qr-link" data-platform-qr-link></div><small class="platform-qr-hint" data-platform-qr-hint></small><div class="platform-qr-actions"><button type="button" data-platform-qr-download-svg>Descargar SVG (3D)</button><button type="button" class="secondary" data-platform-qr-close>Cerrar</button></div></div></section>';
  };
- $('platformAccounts').innerHTML=rows.length?rows.map(a=>'<form class="card platform-account" data-platform-owner="'+esc(a.owner_id)+'"><div class="platform-account-head"><div><strong>'+esc(a.business||'Comercio sin configurar')+'</strong><small>'+esc(a.email||'Sin correo')+' · Alta '+(a.created_at?new Date(a.created_at).toLocaleDateString('es-AR'):'—')+'</small><small>'+esc(billingLabels[a.billing_status]||'Sin método elegido')+(a.billing_payment_method?' · '+esc(methods[a.billing_payment_method]||a.billing_payment_method):'')+(a.comped_access?' · Sin vencimiento · Sin cobros':' · $'+Number(a.amount_ars||30000).toLocaleString('es-AR')+' ARS')+(a.last_paid_at?' · Último pago '+new Date(a.last_paid_at).toLocaleDateString('es-AR'):'')+'</small></div><span class="badge '+(a.comped_access?'':(a.status==='active'||a.status==='trial'?'':'badge-paused'))+'">'+(a.comped_access?'REGALO ILIMITADO':esc(labels[a.status]||a.status))+'</span></div><div class=\"platform-account-contact\"><div><small>WhatsApp para avisos de LOOK</small><strong>'+esc(a.whatsapp||'Sin teléfono cargado')+'</strong></div>'+(platformWhatsAppDigits(a.whatsapp)?'<a class=\"button whatsapp\" href=\"'+platformWhatsAppHref(a)+'\" target=\"_blank\" rel=\"noopener noreferrer\">Abrir WhatsApp</a>':'<span class=\"muted\">Sin teléfono</span>')+'</div>'+nfcActions(a)+'<div class="platform-fields"><label>Plan<input name="plan" maxlength="80" value="'+esc(a.plan||'Sin asignar')+'" required></label><label>Estado<select name="status"><option value="trial" '+(a.status==='trial'?'selected':'')+'>Prueba</option><option value="active" '+(a.status==='active'?'selected':'')+'>Activo</option><option value="suspended" '+(a.status==='suspended'?'selected':'')+'>Suspendido</option><option value="cancelled" '+(a.status==='cancelled'?'selected':'')+'>Cancelado</option></select></label><label>Fin del período<input name="period_ends_at" type="date" value="'+esc(a.period_ends_at||'')+'"></label></div>'+(a.billing_status==='manual_pending'?'<button type="button" class="confirm-manual-payment" data-owner="'+esc(a.owner_id)+'">Confirmar pago recibido · sumar 1 mes</button>':'')+'<button type="button" class="gift-access-button '+(a.comped_access?'secondary is-gifted':'')+'" data-gift-owner="'+esc(a.owner_id)+'" data-enable="'+(!a.comped_access)+'">'+(a.comped_access?'Quitar regalo gratuito ilimitado':'Regalar acceso gratuito ilimitado')+'</button>'+'<button type="submit" class="secondary">Guardar cambios</button></form>').join(''):'<div class="card empty">No hay cuentas que coincidan con la búsqueda.</div>';
+ $('platformAccounts').innerHTML=rows.length?rows.map(a=>{
+  const hidden=platformAccountIsHidden(a),business=esc(a.business||'Comercio sin configurar'),mail=esc(a.email||'Sin correo');
+  const status=a.comped_access?'Regalo ilimitado':labels[a.status]||a.status||'Sin estado';
+  const expiry=a.period_ends_at?' · Vence '+esc(a.period_ends_at):'';
+  const summary=esc(billingLabels[a.billing_status]||'Sin método elegido')+(a.billing_payment_method?' · '+esc(methods[a.billing_payment_method]||a.billing_payment_method):'')+expiry;
+  return `<form class="platform-account look-platform-compact-row" data-platform-owner="${esc(a.owner_id)}">
+   <div class="look-platform-row-head">
+    <div class="look-platform-ident"><strong title="${business}">${business}</strong><small title="${mail}">${mail}</small><small class="look-platform-billing" title="${esc(summary)}">${esc(summary)}</small></div>
+    <span class="badge look-platform-status ${hidden||a.status==='suspended'||a.status==='cancelled'?'badge-paused':''}">${hidden?'OCULTO':esc(status)}</span>
+    <div class="look-platform-row-actions">
+      <details class="look-platform-more"><summary title="Administrar comercio" aria-label="Administrar ${business}"><span class="look-platform-label">Administrar</span><span class="look-platform-short">⋯</span></summary>
+        <div class="look-platform-details">
+          <div class="look-platform-detailbar"><strong>${business}</strong><small>Alta: ${a.created_at?new Date(a.created_at).toLocaleDateString('es-AR'):'—'}</small></div>
+          <div class="platform-account-contact"><div><small>WhatsApp para avisos</small><strong>${esc(a.whatsapp||'Sin teléfono cargado')}</strong></div>
+           ${platformWhatsAppDigits(a.whatsapp)?`<a class="button whatsapp" href="${platformWhatsAppHref(a)}" target="_blank" rel="noopener noreferrer">Abrir WhatsApp</a>`:'<span class="muted">Sin teléfono</span>'}
+          </div>
+          ${nfcActions(a)}
+          <div class="platform-fields">
+            <label>Plan<input name="plan" maxlength="80" value="${esc(a.plan||'Sin asignar')}" required></label>
+            <label>Estado<select name="status">
+              <option value="trial" ${a.status==='trial'?'selected':''}>Prueba</option>
+              <option value="active" ${a.status==='active'?'selected':''}>Activo</option>
+              <option value="suspended" ${a.status==='suspended'?'selected':''}>Suspendido</option>
+              <option value="cancelled" ${a.status==='cancelled'?'selected':''}>Cancelado</option>
+            </select></label>
+            <label>Fin del período<input name="period_ends_at" type="date" value="${esc(a.period_ends_at||'')}"></label>
+          </div>
+          <div class="look-platform-detail-actions">
+           ${a.billing_status==='manual_pending'?`<button type="button" class="confirm-manual-payment" data-owner="${esc(a.owner_id)}">Confirmar pago recibido · sumar 1 mes</button>`:''}
+           <button type="button" class="gift-access-button ${a.comped_access?'secondary is-gifted':''}" data-gift-owner="${esc(a.owner_id)}" data-enable="${!a.comped_access}">${a.comped_access?'Quitar regalo gratuito ilimitado':'Regalar acceso gratuito ilimitado'}</button>
+           <button type="submit" class="secondary">Guardar cambios</button>
+          </div>
+        </div>
+      </details>
+      <button type="button" class="secondary look-platform-remove" data-platform-hide-owner="${esc(a.owner_id)}" data-hide="${hidden?'false':'true'}" title="${hidden?'Restaurar comercio en la administración':'Quitar comercio de la administración sin borrar datos'}" aria-label="${hidden?'Restaurar':'Ocultar'} comercio ${business}"><span class="look-platform-label">${hidden?'Restaurar':'Ocultar'}</span><span class="look-platform-short">${hidden?'↩':'✕'}</span></button>
+    </div>
+   </div>
+  </form>`;
+ }).join(''):'<div class="card empty">'+(showingHidden?'No hay comercios ocultos.':'No hay comercios que coincidan con la búsqueda.')+'</div>';
 }
+async function togglePlatformHidden(button){
+ const account=platformAccounts.find(a=>a.owner_id===button.dataset.platformHideOwner);
+ if(!account)return;
+ const hide=button.dataset.hide==='true';
+ const question=hide?
+  '¿Ocultar «'+(account.business||account.email||'este comercio')+'» del panel de administración? No se borrará la cuenta, sus clientes, puntos ni pagos. Se podrá restaurar desde «Ver comercios ocultos».':
+  '¿Volver a mostrar «'+(account.business||account.email||'este comercio')+'» en la administración?';
+ if(!confirm(question))return;
+ button.disabled=true;
+ try{
+   await rpc('nfc_platform_set_hidden_account',{p_owner:account.owner_id,p_hidden:hide},true);
+   await loadPlatform();
+   notify(hide?'Comercio oculto del panel. Todos sus datos quedan guardados.':'Comercio restaurado en el panel.');
+ }catch(err){notify(friendly(err),true);button.disabled=false;}
+}
+
 // Generate high-contrast vector QR art, including the four-module quiet zone.
 // The SVG uses one combined black path and a separate white background for 3D editing.
 function platformQrVector(url){
@@ -5164,12 +5273,12 @@ $('clientProfile').onchange=()=>switchActiveProfile($('clientProfile').value);
 bindBusy('merchantClientForm','submit',async()=>{const p=profiles.find(p=>p.id===$('clientProfile').value);if(!p?.active)throw new Error('Elegí un perfil activo.');const phone=digits($('clientPhone').value);if(phone.length<8||phone.length>20)throw new Error('Revisá el teléfono del cliente.');const token=uuid();await rpc('nfc_register_card_v3',{p_profile:p.id,p_token:token,p_name:$('clientName').value.trim(),p_phone:phone,...detailValues('client'),p_referral:''});await rpc('nfc_customer_privacy_update',{p_profile:p.id,p_token:token,p_marketing:$('merchantMarketing').checked,p_accept:true});$('merchantClientForm').reset();await loadAdmin();await copy(cardUrl(p,token));});
 bindBusy('refresh','click',loadAdmin);bindBusy('retry','click',boot);
 bindBusy('importLegacy','click',async()=>{const old=JSON.parse(localStorage.getItem('lookphone_nfc_v1')||'{"profiles":[]}');for(const p of old.profiles){let instagram='';try{instagram=instagramUrl(p.instagram||'');}catch{}if(profiles.some(x=>x.business===p.business&&x.name===p.name))continue;await request('/rest/v1/nfc_profiles',{method:'POST',body:{business:String(p.business||'Comercio').slice(0,100),name:String(p.name||'Perfil NFC').slice(0,100),phone:digits(p.phone||'').slice(0,20),wa_message:String(p.waMsg||'').slice(0,500),instagram,reward:String(p.reward||'10% de descuento').slice(0,300),goal:10}},true);await loadAdmin();}localStorage.setItem('lookphone_nfc_v1_imported',JSON.stringify(old));localStorage.removeItem('lookphone_nfc_v1');$('legacy').hidden=true;notify('Perfiles importados. Copiá las nuevas URLs para tus NFC.');});
-$('platformLink').onclick=()=>{const u=new URL(location.href);u.searchParams.set('platform','1');history.pushState(null,'',u);loadPlatform().then(()=>view('platform')).catch(err=>notify(friendly(err),true));};$('platformBack').onclick=()=>{const u=new URL(location.href);u.searchParams.delete('platform');history.pushState(null,'',u);loadAdmin().catch(err=>notify(friendly(err),true));};$('platformSearch').oninput=renderPlatformAccounts;
+$('platformLink').onclick=()=>{const u=new URL(location.href);u.searchParams.set('platform','1');history.pushState(null,'',u);loadPlatform().then(()=>view('platform')).catch(err=>notify(friendly(err),true));};$('platformBack').onclick=()=>{const u=new URL(location.href);u.searchParams.delete('platform');history.pushState(null,'',u);loadAdmin().catch(err=>notify(friendly(err),true));};$('platformSearch').oninput=renderPlatformAccounts;$('platformShowHidden').onchange=()=>{renderPlatformAccounts();renderPlatformClientGroups();};
 let platformClientSearchTimer;
 $('platformClientSearch').oninput=()=>{clearTimeout(platformClientSearchTimer);platformClientSearchTimer=setTimeout(()=>loadPlatformClientGroups().catch(err=>notify(friendly(err),true)),220);};
 $('platformClientGroups').onclick=e=>{const toggle=e.target.closest('[data-platform-toggle-profile]');if(toggle){togglePlatformBusiness(toggle.dataset.platformToggleProfile);return;}const page=e.target.closest('[data-platform-business-page]');if(page)loadPlatformBusinessClientPage(page.dataset.platformBusinessPage,Number(page.dataset.offset||0)).catch(err=>notify(friendly(err),true));};
 $('downloadPlatformAccounts').onclick=downloadPlatformAccountsCsv;
-$('downloadPlatformClients').onclick=e=>downloadPlatformClientsCsv(e.currentTarget).catch(err=>notify(friendly(err),true));$('platformAccounts').onsubmit=async e=>{const form=e.target.closest('[data-platform-owner]');if(!form)return;e.preventDefault();const button=form.querySelector('button[type="submit"]');button.disabled=true;try{await savePlatformAccount(form);}catch(err){notify(friendly(err),true);}finally{button.disabled=false;}};$('startPlatformWhatsApp').onclick=startPlatformWhatsAppSequence;$('nextPlatformWhatsApp').onclick=openNextPlatformWhatsApp;$('platformNoticeType').onchange=renderPlatformAccounts;$('platformNoticeMessage').oninput=renderPlatformAccounts;$('platformAccounts').onclick=e=>{const qrOpen=e.target.closest('[data-platform-qr-open]');if(qrOpen){try{openPlatformQr(qrOpen);}catch(err){notify(friendly(err),true);}return;}const qrDownload=e.target.closest('[data-platform-qr-download-svg]');if(qrDownload){try{downloadPlatformQrSvg(qrDownload);}catch(err){notify(friendly(err),true);}return;}const qrClose=e.target.closest('[data-platform-qr-close]');if(qrClose){qrClose.closest('[data-platform-qr-3d]').hidden=true;return;}const copyButton=e.target.closest('[data-platform-copy-nfc]');if(copyButton){const u=new URL(location.pathname,location.origin);u.searchParams.set('nfc',copyButton.dataset.platformCopyNfc);copy(u.href);return;}const gift=e.target.closest('.gift-access-button');if(gift){toggleGiftAccess(gift);return;}const button=e.target.closest('.confirm-manual-payment');if(button)confirmManualPayment(button);};document.addEventListener('click',e=>{const button=e.target.closest('[data-billing-method]');if(!button)return;const method=button.dataset.billingMethod;if(method==='mercadopago')startMerchantSubscription(button);else requestManualPayment(button,method);});$('suspendedLogout').onclick=()=>$('logout').click();
+$('downloadPlatformClients').onclick=e=>downloadPlatformClientsCsv(e.currentTarget).catch(err=>notify(friendly(err),true));$('platformAccounts').onsubmit=async e=>{const form=e.target.closest('[data-platform-owner]');if(!form)return;e.preventDefault();const button=form.querySelector('button[type="submit"]');button.disabled=true;try{await savePlatformAccount(form);}catch(err){notify(friendly(err),true);}finally{button.disabled=false;}};$('startPlatformWhatsApp').onclick=startPlatformWhatsAppSequence;$('nextPlatformWhatsApp').onclick=openNextPlatformWhatsApp;$('platformNoticeType').onchange=renderPlatformAccounts;$('platformNoticeMessage').oninput=renderPlatformAccounts;$('platformAccounts').onclick=e=>{const hide=e.target.closest('[data-platform-hide-owner]');if(hide){togglePlatformHidden(hide);return;}const qrOpen=e.target.closest('[data-platform-qr-open]');if(qrOpen){try{openPlatformQr(qrOpen);}catch(err){notify(friendly(err),true);}return;}const qrDownload=e.target.closest('[data-platform-qr-download-svg]');if(qrDownload){try{downloadPlatformQrSvg(qrDownload);}catch(err){notify(friendly(err),true);}return;}const qrClose=e.target.closest('[data-platform-qr-close]');if(qrClose){qrClose.closest('[data-platform-qr-3d]').hidden=true;return;}const copyButton=e.target.closest('[data-platform-copy-nfc]');if(copyButton){const u=new URL(location.pathname,location.origin);u.searchParams.set('nfc',copyButton.dataset.platformCopyNfc);copy(u.href);return;}const gift=e.target.closest('.gift-access-button');if(gift){toggleGiftAccess(gift);return;}const button=e.target.closest('.confirm-manual-payment');if(button)confirmManualPayment(button);};document.addEventListener('click',e=>{const button=e.target.closest('[data-billing-method]');if(!button)return;const method=button.dataset.billingMethod;if(method==='mercadopago')startMerchantSubscription(button);else requestManualPayment(button,method);});$('suspendedLogout').onclick=()=>$('logout').click();
 document.querySelector('.admin-nav').onclick=e=>{const button=e.target.closest('[data-tab]');if(button)setAdminTab(button.dataset.tab);};document.querySelector('.quick-grid').onclick=e=>{const button=e.target.closest('[data-go-tab]');if(button)setAdminTab(button.dataset.goTab,{focus:button.dataset.focus});};
 $('clientDetailsFields').innerHTML=detailFields('client');$('editClientFields').innerHTML=detailFields('editClient');$('cancelClientDetails').onclick=()=>{$('editClientForm').hidden=true;editingClient=null;};bindBusy('editClientForm','submit',async()=>{if(!editingClient)return;await rpc('nfc_update_details',{p_profile:editingClient.profile_id,p_token:editingClient.card_token,...detailValues('editClient')},true);await request('/rest/v1/nfc_clients?id=eq.'+editingClient.id,{method:'PATCH',body:{notes:$('editClientNotes').value.trim()||null}},true);$('editClientForm').hidden=true;editingClient=null;await loadAdmin();notify('Datos del cliente guardados.');});
 
