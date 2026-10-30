@@ -57,11 +57,11 @@ as $$
 declare v_user uuid:=auth.uid(); v_c public.nfc_clients%rowtype; v_owner uuid;
 begin
  if v_user is null or p_client is null then raise exception 'Iniciá sesión y elegí un cliente'; end if;
- select c.*, p.owner_id into v_c,v_owner
+ select c into v_c
  from public.nfc_clients c
  join public.nfc_profiles p on p.id=c.profile_id
- where c.id=p_client for update of c;
- if v_c.id is null or v_owner<>v_user then
+ where c.id=p_client and p.owner_id=v_user for update of c;
+ if v_c.id is null then
   raise exception 'No tenés permiso para gestionar este cliente';
  end if;
  if coalesce(p_restore,false) then
@@ -141,7 +141,7 @@ begin
       where q.profile_id=p_profile and q.active
       and (q.expires_at is null or q.expires_at>=current_date)
       and (q.client_id is null or q.client_id=c.id)
-      and (q.audience='all' or q.audience=category or q.audience='birthday')),'[]'::jsonb)
+      and (q.audience='all' or q.audience=category or q.audience='birthday')),'[]'::jsonb))
  into result;
  return result;
 end $$;
