@@ -3150,28 +3150,52 @@ body.app-starting{display:none!important}
 }
 
 
-/* Listado compacto de clientes: nombre fijo, acciones horizontales */
-#admin .look-clist{margin-top:12px;border:1px solid #e2e9f1;border-radius:12px;overflow:hidden;background:#fff}
-#admin .look-clist-title{display:flex;justify-content:space-between;background:#f4f7fa;padding:8px 10px;font-size:11px;color:#60728a}
-#admin .look-crow{display:grid;grid-template-columns:minmax(160px,28%) minmax(0,1fr);align-items:center;gap:10px;min-height:65px;padding:8px 10px;border-bottom:1px solid #e9eef4}
-#admin .look-crow:last-child{border-bottom:0}
+
+/* Clientes LOOK: todas las filas completas, sin scroll lateral en PC o teléfono */
+#admin .look-clist{margin-top:12px;border:1px solid #e2e9f1;border-radius:12px;overflow:visible;background:#fff;position:relative}
+#admin .look-clist-title{display:flex;justify-content:space-between;gap:8px;background:#f4f7fa;padding:8px 10px;font-size:11px;color:#60728a;border-radius:12px 12px 0 0}
+#admin .look-crow{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:9px;width:100%;min-width:0;min-height:64px;padding:8px 10px;border-bottom:1px solid #e9eef4}
+#admin .look-crow:last-child{border-bottom:0;border-radius:0 0 12px 12px}
 #admin .look-crow:nth-child(2n){background:#fbfcfe}
-#admin .look-cname{display:flex;flex-direction:column;gap:2px;min-width:0;overflow:hidden}
-#admin .look-cname>*{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-#admin .look-cname strong{font-size:13px;color:#172a40}
-#admin .look-cname small{font-size:11px;color:#60728a}
-#admin .look-cname span{font-size:10px;color:#276699;font-weight:650}
-#admin .look-cactions{min-width:0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
-#admin .look-cactionitems{display:flex!important;flex-wrap:nowrap!important;align-items:center;gap:5px;width:max-content;min-width:max-content}
-#admin .look-cactionitems button,#admin .look-cactionitems a.button{flex:0 0 auto!important;width:auto!important;min-width:0!important;min-height:35px!important;height:35px!important;padding:6px 9px!important;margin:0!important;border-radius:8px!important;font-size:11px!important;line-height:1!important;white-space:nowrap!important}
-#admin .look-cactionitems select{flex:0 0 auto!important;width:auto!important;max-width:125px!important;min-height:35px!important;height:35px!important;padding:5px 7px!important;margin:0!important;font-size:11px!important;grid-column:auto!important}
-#admin .look-cempty{padding:14px;font-size:12px;color:#667085}
+#admin .look-crow:has(.look-cmore[open]){z-index:50}
+#admin .look-cname{display:flex;flex-direction:column;gap:2px;min-width:0;max-width:100%;overflow:hidden}
+#admin .look-cname strong{color:#172a40;font-size:13px;line-height:1.25;font-weight:750;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#admin .look-cname small{color:#61728a;font-size:11px;line-height:1.25;overflow-wrap:anywhere}
+#admin .look-cname span{color:#276699;font-size:10px;line-height:1.25;font-weight:650;overflow-wrap:anywhere}
+#admin .look-cactions{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:flex-end;gap:5px;min-width:0;width:auto;max-width:100%;overflow:visible}
+#admin .look-cactions>.look-cprimary,#admin .look-cmore>summary{box-sizing:border-box;display:inline-flex!important;align-items:center;justify-content:center;flex:0 0 auto!important;min-width:0!important;width:auto!important;max-width:none!important;height:35px!important;min-height:35px!important;padding:6px 9px!important;margin:0!important;border-radius:8px!important;font-size:11px!important;font-weight:700!important;line-height:1!important;white-space:nowrap!important;text-decoration:none!important;cursor:pointer}
+#admin .look-cactions>.look-cprimary[disabled]{opacity:.5;cursor:not-allowed}
+#admin .look-cmore{position:relative;display:block;flex:0 0 auto;min-width:0}
+#admin .look-cmore>summary{list-style:none;background:#ecf1f8;color:#304662;border:1px solid #dce4ef}
+#admin .look-cmore>summary::-webkit-details-marker{display:none}
+#admin .look-cmore>summary::marker{content:''}
+#admin .look-cmore[open]>summary{background:#dae6f8;border-color:#b8cde8}
+#admin .look-cmini{display:none}
+#admin .look-cmenu{position:absolute;z-index:60;top:calc(100% + 7px);right:0;width:min(320px,calc(100vw - 44px));padding:11px;background:#fff;border:1px solid #d9e2ed;border-radius:12px;box-shadow:0 12px 28px rgba(16,24,39,.17);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#admin .look-cmenu-title{grid-column:1/-1;color:#263e57;font-size:12px;font-weight:750;overflow-wrap:anywhere;margin-bottom:1px}
+#admin .look-cmenu>button{width:100%!important;min-width:0!important;height:36px!important;min-height:36px!important;margin:0!important;padding:6px!important;font-size:11px!important;line-height:1.25!important;border-radius:8px!important}
+#admin .look-cmenu-field{grid-column:1/-1;display:flex;flex-direction:column;gap:4px;min-width:0}
+#admin .look-cmenu-field>label{font-size:11px;font-weight:700;color:#60728a}
+#admin .look-cmenu-field>select.compact-select{width:100%!important;max-width:100%!important;min-height:36px!important;height:36px!important;margin:0!important;font-size:12px!important;grid-column:auto!important}
+#admin .look-cmenu-message{display:flex;gap:6px;align-items:center;min-width:0}
+#admin .look-cmenu-message>select.compact-select{flex:1 1 auto;min-width:0;max-width:none;width:100%;min-height:36px!important;height:36px!important;margin:0!important;font-size:12px!important;grid-column:auto!important}
+#admin .look-cmenu-message>button{flex:0 0 auto;min-height:36px!important;height:36px!important;margin:0!important;padding:7px!important;font-size:11px!important;width:auto!important;grid-column:auto!important}
+#admin .look-cempty{padding:16px;font-size:12px;color:#667085}
 @media(max-width:650px){
-#admin .look-crow{grid-template-columns:minmax(112px,40%) minmax(0,1fr);gap:6px;padding:7px 8px}
-#admin .look-cname strong{font-size:12px}
-#admin .look-cname small{font-size:10px}
-#admin .look-cname span{font-size:9.5px}
-#admin .look-cactionitems button,#admin .look-cactionitems a.button{min-height:34px!important;height:34px!important;padding:5px 7px!important;font-size:10.5px!important}
+ #admin .look-clist-title{padding:7px 8px;font-size:10px}
+ #admin .look-crow{grid-template-columns:minmax(0,1fr) auto;gap:5px;min-height:63px;padding:7px 6px}
+ #admin .look-cname strong{font-size:11.5px;line-height:1.24}
+ #admin .look-cname small{font-size:10px;line-height:1.2}
+ #admin .look-cname span{font-size:9.5px;line-height:1.2}
+ #admin .look-cactions{gap:3px;flex-wrap:nowrap!important}
+ #admin .look-cactions>.look-cprimary,#admin .look-cmore>summary{width:34px!important;min-width:34px!important;height:34px!important;min-height:34px!important;padding:4px 2px!important;font-size:11px!important}
+ #admin .look-cfull{display:none!important}
+ #admin .look-cmini{display:inline!important;font-size:12px!important}
+}
+@media(max-width:360px){
+ #admin .look-crow{padding:6px 5px;gap:3px}
+ #admin .look-cactions{gap:2px}
+ #admin .look-cactions>.look-cprimary,#admin .look-cmore>summary{width:32px!important;min-width:32px!important;height:33px!important;min-height:33px!important}
 }
 </style>
 </head>
@@ -4609,9 +4633,27 @@ function renderClients(){
   $('birthdaysMonth').innerHTML=thisMonth.map(birthdayItem).join('')||'<small>No hay cumpleaños registrados para este mes.</small>';$('birthdaysUpcoming').innerHTML=upcoming.map(birthdayItem).join('')||'<small>No hay próximos cumpleaños registrados.</small>';
   const filterLabels={all:'Todos',new:'Nuevos',frequent:'Frecuentes',vip:'VIP',eligible:'Con premio',near:'Cerca del premio',inactive:'Inactivos',never:'Sin visitas',birthday:'Cumpleaños próximos'};$('clientFilters').innerHTML=Object.entries(filterLabels).map(([key,label])=>`<button type="button" class="filter-chip ${category===key?'active':''}" data-filter="${key}">${label}</button>`).join('');$('clientSummary').textContent=`Mostrando ${list.length} de ${profileClients.length} clientes${category!=='all'?' · Filtro: '+filterLabels[category]:''}${query?' · Búsqueda activa':''}`;$('clearClientFilters').hidden=category==='all'&&!query;
   $('clients').innerHTML=list.length?list.map(c=>{
-   const cat=clientCategory(c),visits=realVisitCount(c),wa=merchantCardWhatsAppUrl(c,p);
-   return `<div class="look-crow" role="listitem"><div class="look-cname"><strong title="${esc(c.name)}">${esc(c.name)}</strong><small title="Teléfono del cliente">${esc(c.phone)||'Sin teléfono'}</small><span>${Number(c.points)||0}/${Number(p.goal)||0} pts · ${visits} compras · ${esc(CLIENT_CATEGORIES[cat].label)}</span></div><div class="look-cactions" role="group" aria-label="Acciones para ${esc(c.name)}" tabindex="0"><div class="look-cactionitems"><button data-action="purchase" data-id="${esc(c.id)}" ${p.active?'':'disabled'}>+ Compra</button>${wa?`<a class="button whatsapp" target="_blank" rel="noopener noreferrer" href="${esc(wa)}" aria-label="Enviar tarjeta de ${esc(c.name)} por WhatsApp">Enviar tarjeta</a>`:'<button disabled title="Número de WhatsApp inválido">Enviar tarjeta</button>'}${waControls(c)}<button class="secondary" data-action="redeem" data-id="${esc(c.id)}" ${p.active&&c.points>=p.goal?'':'disabled'}>Canjear</button><button class="secondary" data-action="history" data-id="${esc(c.id)}">Historial</button><button class="secondary" data-action="details" data-id="${esc(c.id)}" ${p.active?'':'disabled'}>Editar</button><button class="secondary" data-action="card" data-id="${esc(c.id)}">Copiar enlace</button>${categorySelect(c)}</div></div></div>`;
-  }).join(''):`<div class="look-cempty">${query||category!=='all'?'No se encontraron clientes':'Todavía no hay tarjetas en este perfil.'}</div>`;
+ const cat=clientCategory(c),visits=realVisitCount(c),wa=merchantCardWhatsAppUrl(c,p);
+ const marketing=c.marketing_opt_in===true&&!!argentinaWhatsApp(c.phone),name=esc(c.name);
+ return `<div class="look-crow" role="listitem">
+   <div class="look-cname"><strong title="${name}">${name}</strong><small>${esc(c.phone)||'Sin teléfono'}</small><span>${Number(c.points)||0}/${Number(p.goal)||0} pts · ${visits} ${visits===1?'compra':'compras'} · ${esc(CLIENT_CATEGORIES[cat].label)}</span></div>
+   <div class="look-cactions" role="group" aria-label="Acciones para ${name}">
+     <button type="button" class="look-cprimary" data-action="purchase" data-id="${esc(c.id)}" title="Registrar compra" aria-label="Registrar compra de ${name}" ${p.active?'':'disabled'}><span class="look-cfull">+ Compra</span><span class="look-cmini">+</span></button>
+     ${wa?`<a class="button whatsapp look-cprimary" href="${esc(wa)}" target="_blank" rel="noopener noreferrer" title="Enviar tarjeta" aria-label="Enviar tarjeta por WhatsApp a ${name}"><span class="look-cfull">Enviar tarjeta</span><span class="look-cmini">📲</span></a>`:`<button type="button" disabled class="secondary look-cprimary" title="No hay WhatsApp válido para enviar tarjeta" aria-label="Enviar tarjeta no disponible para ${name}"><span class="look-cfull">Enviar tarjeta</span><span class="look-cmini">📲</span></button>`}
+     <button type="button" class="whatsapp look-cprimary" data-action="whatsapp-direct" data-wa-type="points" data-id="${esc(c.id)}" title="${marketing?'Enviar WhatsApp':'El cliente no autorizó promociones o no tiene teléfono válido'}" aria-label="WhatsApp a ${name}" ${marketing?'':'disabled'}><span class="look-cfull">WhatsApp</span><span class="look-cmini">WA</span></button>
+     <details class="look-cmore"><summary aria-label="Más opciones para ${name}" title="Más opciones"><span class="look-cfull">Más</span><span class="look-cmini">⋯</span></summary>
+       <div class="look-cmenu"><strong class="look-cmenu-title">Opciones de ${name}</strong>
+         <button type="button" class="secondary" data-action="redeem" data-id="${esc(c.id)}" ${p.active&&Number(c.points)>=Number(p.goal)?'':'disabled'}>🎁 Canjear premio</button>
+         <button type="button" class="secondary" data-action="history" data-id="${esc(c.id)}">Historial de compras</button>
+         <button type="button" class="secondary" data-action="details" data-id="${esc(c.id)}" ${p.active?'':'disabled'}>Editar datos</button>
+         <button type="button" class="secondary" data-action="card" data-id="${esc(c.id)}">Copiar enlace</button>
+         <div class="look-cmenu-field"><label>Categoría</label>${categorySelect(c)}</div>
+         <div class="look-cmenu-field"><label>Mensajes de WhatsApp</label><div class="look-cmenu-message">${waControls(c)}</div></div>
+       </div>
+     </details>
+   </div>
+ </div>`;
+ }).join(''):`<div class="look-cempty">${query||category!=='all'?'No se encontraron clientes':'Todavía no hay tarjetas en este perfil.'}</div>`;
 }
 function renderRewardForm(){const p=profiles.find(p=>p.id===$('rewardProfile').value);$('rewardGoal').value=p?.goal||'';$('rewardName').value=p?.reward||'';$('saveReward').disabled=!p;updateRewardPreview();renderLoyalty();}
 function updateRewardPreview(){const goal=$('rewardGoal').value,reward=$('rewardName').value.trim();$('rewardPreview').textContent=goal&&reward?goal+' puntos → '+reward:'Completá los puntos y el premio.';}
@@ -4984,7 +5026,7 @@ bindBusy('recoveryForm','submit',async()=>{await request('/auth/v1/user',{method
 bindBusy('logout','click',async()=>{try{await raw('/auth/v1/logout',{method:'POST',token:session?.access_token});}finally{saveSession(null);profiles=[];clients=[];isPlatformAdmin=false;cancelEdit();clearMerchantTheme();view('auth');}});
 bindBusy('profileForm','submit',async()=>{const data=profileData();const wasEditing=!!editing;if(editing)await request('/rest/v1/nfc_profiles?id=eq.'+editing,{method:'PATCH',body:data},true);else{if(profiles.length)throw new Error('Tu cuenta ya tiene un negocio. Cada cuenta comercial admite un solo perfil.');await request('/rest/v1/nfc_profiles',{method:'POST',body:data},true);}cancelEdit();await loadAdmin();notify(wasEditing?'Cambios guardados.':'Negocio guardado online.');});
 if($('activeBusiness'))$('activeBusiness').onchange=()=>switchActiveProfile($('activeBusiness').value);
-$('cancelEdit').onclick=cancelEdit;$('profiles').onclick=profileAction;$('clients').onclick=clientAction;$('clients').onchange=clientCategoryChange;$('birthdays').onclick=clientAction;$('clientSearch').oninput=renderClients;$('quickVisitSearch').oninput=searchQuickVisitClients;$('quickVisitSearch').onfocus=refreshQuickVisitClients;$('quickVisitResults').onclick=quickVisitAction;$('cardDeliveryQueue').onclick=e=>{const done=e.target.closest('[data-card-delivery-done]');if(done)removePendingCardDelivery(done.dataset.cardDeliveryDone);};$('quickVisitRefresh').onclick=()=>refreshQuickVisitClients();$('clientSort').onchange=renderClients;$('clientCategory').onchange=renderClients;$('closeClientHistory').onclick=closeClientHistory;$('clientHistoryContent').onclick=editClientVisitAmount;$('rewardProfile').onchange=()=>switchActiveProfile($('rewardProfile').value);$('rewardGoal').oninput=updateRewardPreview;$('rewardName').oninput=updateRewardPreview;bindBusy('rewardForm','submit',async()=>{
+$('cancelEdit').onclick=cancelEdit;$('profiles').onclick=profileAction;$('clients').onclick=e=>{const summary=e.target.closest('.look-cmore summary');if(summary){const current=summary.closest('.look-cmore');$('clients').querySelectorAll('.look-cmore[open]').forEach(d=>{if(d!==current)d.open=false;});}clientAction(e);};$('clients').onchange=clientCategoryChange;$('birthdays').onclick=clientAction;$('clientSearch').oninput=renderClients;$('quickVisitSearch').oninput=searchQuickVisitClients;$('quickVisitSearch').onfocus=refreshQuickVisitClients;$('quickVisitResults').onclick=quickVisitAction;$('cardDeliveryQueue').onclick=e=>{const done=e.target.closest('[data-card-delivery-done]');if(done)removePendingCardDelivery(done.dataset.cardDeliveryDone);};$('quickVisitRefresh').onclick=()=>refreshQuickVisitClients();$('clientSort').onchange=renderClients;$('clientCategory').onchange=renderClients;$('closeClientHistory').onclick=closeClientHistory;$('clientHistoryContent').onclick=editClientVisitAmount;$('rewardProfile').onchange=()=>switchActiveProfile($('rewardProfile').value);$('rewardGoal').oninput=updateRewardPreview;$('rewardName').oninput=updateRewardPreview;bindBusy('rewardForm','submit',async()=>{
  const status=$('rewardSaveStatus');
  try{
   const p=profiles.find(p=>p.id===$('rewardProfile').value);
