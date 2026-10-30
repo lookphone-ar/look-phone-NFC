@@ -4025,11 +4025,15 @@ function renderPlatformBusinessClientDetails(profileId,detail){
   '<div class="row spread platform-business-pagination"><button type="button" class="secondary" data-platform-business-page="'+esc(profileId)+'" data-offset="'+Math.max(0,detail.offset-100)+'" '+(detail.offset<=0?'disabled':'')+'>Anterior</button><span class="muted">Mostrando '+from+'–'+to+' de '+detail.total.toLocaleString('es-AR')+' · Página '+(Math.floor(detail.offset/100)+1)+' de '+pages+'</span><button type="button" class="secondary" data-platform-business-page="'+esc(profileId)+'" data-offset="'+(detail.offset+100)+'" '+(detail.offset+detail.rows.length>=detail.total?'disabled':'')+'>Siguiente</button></div>';
 }
 function renderPlatformClientGroups(){
- const total=platformClientGroups.reduce((sum,g)=>sum+Number(g.client_count||0),0);
- $('platformClientSummary').textContent=platformClientGroups.length?
-  platformClientGroups.length.toLocaleString('es-AR')+' comercios · '+total.toLocaleString('es-AR')+' clientes. Desplegá un comercio para ver los detalles.':
+ const visiblePlatformClientGroups=platformClientGroups.filter(g=>{
+  const account=platformAccounts.find(a=>a.profile_id===g.profile_id);
+  return !platformAccountIsHidden(account)||$('platformShowHidden')?.checked===true;
+ });
+ const total=visiblePlatformClientGroups.reduce((sum,g)=>sum+Number(g.client_count||0),0);
+ $('platformClientSummary').textContent=visiblePlatformClientGroups.length?
+  visiblePlatformClientGroups.length.toLocaleString('es-AR')+' comercios · '+total.toLocaleString('es-AR')+' clientes. Desplegá un comercio para ver los detalles.':
   'No hay comercios o clientes que coincidan con la búsqueda.';
- $('platformClientGroups').innerHTML=platformClientGroups.length?platformClientGroups.map(g=>{
+ $('visiblePlatformClientGroups').innerHTML=visiblePlatformClientGroups.length?visiblePlatformClientGroups.map(g=>{
   const profileId=String(g.profile_id||''),expanded=platformClientExpanded.has(profileId);
   const detail=platformClientDetails.get(profileId)||{rows:[],total:0,offset:0,loaded:false,loading:false,error:''};
   return '<article class="card platform-business-group"><div class="platform-business-head"><div><strong class="platform-business-name">'+esc(g.business||'Comercio sin nombre')+'</strong><small>'+esc(g.merchant_email||'Sin correo de cuenta')+'</small></div><span class="platform-business-count">'+Number(g.client_count||0).toLocaleString('es-AR')+' clientes</span><button type="button" class="secondary" data-platform-toggle-profile="'+esc(profileId)+'" aria-expanded="'+String(expanded)+'" aria-controls="platform-business-clients-'+esc(profileId)+'">'+(expanded?'Ocultar detalle':'Ver clientes')+'</button></div><div class="platform-business-details" id="platform-business-clients-'+esc(profileId)+'" '+(expanded?'':'hidden')+'>'+renderPlatformBusinessClientDetails(profileId,detail)+'</div></article>';
