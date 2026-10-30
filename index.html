@@ -4926,6 +4926,9 @@ async function quickVisitAction(e){
       events.unshift({id:event,client_id:c.id,kind:'visit',delta:1,sale_amount:saleAmount,created_at:new Date().toISOString()});
     }
     if(firstPurchase)enqueueFirstPurchaseCard(c);
+    // Limpiar sólo el importe de la compra confirmada; conservar otros importes en edición.
+    const confirmedAmountInput=boxForQuickAmount(c.id);
+    if(confirmedAmountInput)confirmedAmountInput.value='';
     $('quickVisitSearch').value='';
     renderQuickVisit();
     if($('statVisits'))$('statVisits').textContent=events.filter(x=>x.kind==='visit').length;
