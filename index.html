@@ -4950,7 +4950,7 @@ function renderClients(){
   $('clients').innerHTML=list.length?list.map(c=>{
  if(showingArchived)return `<div class="look-crow look-crow-archived" role="listitem">
  <div class="look-cname"><strong>${esc(c.name)}</strong><small>${esc(c.phone)||'Sin teléfono'}</small><span>${Number(c.points)||0} puntos guardados · Eliminado</span></div>
- <div class="look-cactions"><button type="button" class="secondary" data-action="restore-client" data-id="${esc(c.id)}" aria-label="Restaurar cliente ${esc(c.name)}">↩ Restaurar</button></div></div>`;
+ <div class="look-cactions"><button type="button" class="secondary" data-action="restore-client" data-id="${esc(c.id)}" aria-label="Restaurar cliente ${esc(c.name)}">↩ Restaurar</button><button type="button" class="secondary look-cdanger" data-action="remove-client" data-id="${esc(c.id)}" aria-label="Eliminar definitivamente a ${esc(c.name)}">Eliminar definitivamente</button></div></div>`;
  const cat=clientCategory(c),visits=realVisitCount(c),wa=merchantCardWhatsAppUrl(c,p);
  const marketing=c.marketing_opt_in===true&&!!argentinaWhatsApp(c.phone),name=esc(c.name);
  return `<div class="look-crow" role="listitem">
@@ -5038,13 +5038,14 @@ async function clientAction(e){const b=e.target.closest('button[data-action]');i
  const action=b.dataset.action, c=[...clients,...archivedClients].find(c=>c.id===b.dataset.id);
  const p=profiles.find(p=>p.id===c?.profile_id);if(!c||!p)return;
  if(action==='remove-client'){
-   if(!confirm('¿Eliminar a '+c.name+' de la lista? Si tiene compras, LOOK conservará sus ventas y puntos para poder recuperarlos. Esta acción no se puede deshacer si el cliente no tiene movimientos.'))return;
+   if(!confirm('¿ELIMINAR DEFINITIVAMENTE a '+c.name+'?\n\nSe borrarán su tarjeta de puntos, datos personales, compras, puntos, premios y movimientos asociados. NO se podrán recuperar.\n\n¿Confirmás la eliminación permanente?'))return;
    b.disabled=true;
    try{
      const result=await rpc('nfc_manage_client',{p_client:c.id,p_restore:false},true);
+     if(result?.action!=='deleted')throw new Error('No se pudo confirmar la eliminación definitiva. Revisá e intentá nuevamente.');
      removePendingCardDelivery(c.id);
      await loadAdmin();
-     notify(result?.action==='deleted'?'Cliente eliminado correctamente.':'Cliente retirado del listado. El historial de compras se conserva y podés restaurarlo.');
+     notify('Cliente y todos sus datos eliminados definitivamente.');
    }catch(err){notify(friendly(err),true);b.disabled=false;}return;
  }
  if(action==='restore-client'){
