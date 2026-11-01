@@ -3439,6 +3439,29 @@ body.app-starting{display:none!important}
  max-width:none!important;max-height:none!important;filter:none!important;
  user-select:none!important;pointer-events:none!important;
 }
+
+/* Historial privado de empleados: compacto, legible y adaptable al celular. */
+#merchantStaffPanel .look-employee-history{margin-top:15px;border-top:1px solid #e6eaf0;padding-top:13px;min-width:0}
+.look-employee-history-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.look-employee-history-heading h4{font-size:17px;line-height:1.25;margin:0 0 3px;color:#203048}
+.look-employee-history-heading p{font-size:12px;line-height:1.4;margin:0;color:#627286}
+.look-employee-history-heading button{flex:none;min-height:33px!important;padding:7px 9px!important;font-size:12px!important}
+.look-employee-history-controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px;margin:12px 0 6px}
+.look-employee-history-controls label{display:block;min-width:0;font-size:11px;font-weight:700;color:#526177;margin:0}
+.look-employee-history-controls select{width:100%;min-height:36px!important;margin-top:4px;padding:6px 8px;font-size:13px;background:#fff;color:#213047;border:1px solid #dce3eb}
+.look-employee-history-state{font-size:12px;color:#617086;line-height:1.35;margin:8px 0}
+.look-employee-history-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:10px 0}
+.look-employee-history-summary>div{border:1px solid #e6eaf0;background:#f8fafc;border-radius:10px;padding:8px;min-width:0}
+.look-employee-history-summary small{display:block;color:#69788c;font-size:10px;font-weight:600;line-height:1.25}
+.look-employee-history-summary strong{display:block;margin-top:4px;font-size:17px;line-height:1.1;color:#1e2f44;overflow-wrap:anywhere}
+.look-employee-history-list{display:grid;gap:6px;max-height:400px;overflow-y:auto;overscroll-behavior:contain;padding-right:2px}
+.look-employee-history-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 8px;padding:9px 10px;background:#fff;border:1px solid #e5e9ef;border-radius:10px;min-width:0}
+.look-employee-history-item strong{font-size:12px;color:#263346;line-height:1.3}
+.look-employee-history-item .look-eh-kind{font-size:10px;font-weight:700;color:#99632f}
+.look-employee-history-item .look-eh-client{font-size:11px;color:#647286;line-height:1.4;overflow-wrap:anywhere}
+.look-employee-history-item .look-eh-amount{font-size:12px;font-weight:800;color:#33475b;text-align:right}
+.look-employee-history-item time{font-size:10px;color:#708093;text-align:right}
+@media(max-width:420px){.look-employee-history-heading h4{font-size:15px}.look-employee-history-heading p{font-size:11px}.look-employee-history-summary strong{font-size:14px}.look-employee-history-summary>div{padding:7px}.look-employee-history-item{padding:8px}}
 </style>
 </head>
 <body class="app-starting">
@@ -3526,6 +3549,17 @@ body.app-starting{display:none!important}
 <div class="row" style="margin:12px 0"><button type="button" id="openStaffWorkspace" class="secondary">Abrir espacio de empleados</button></div>
 <div id="staffMemberList" class="look-staff-members"></div>
 <div id="staffInviteLink" hidden></div>
+
+<div class="look-employee-history" id="employeeHistory" aria-label="Historial privado de empleados">
+ <div class="look-employee-history-heading"><div><h4>Actividad de empleados</h4><p>Historial privado del dueño. Compras, puntos y canjes registrados desde perfiles de empleados.</p></div><button type="button" id="employeeHistoryRefresh" class="secondary">Actualizar</button></div>
+ <div class="look-employee-history-controls">
+  <label for="employeeHistoryEmployee">Empleado<select id="employeeHistoryEmployee"><option value="all">Todos los empleados</option></select></label>
+  <label for="employeeHistoryDays">Período<select id="employeeHistoryDays"><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="90">Últimos 90 días</option><option value="0">Todo el historial</option></select></label>
+ </div>
+ <p id="employeeHistoryState" class="look-employee-history-state" role="status" aria-live="polite">Cargando movimientos…</p>
+ <div id="employeeHistorySummary" class="look-employee-history-summary" aria-live="polite"></div>
+ <div id="employeeHistoryList" class="look-employee-history-list" aria-label="Movimientos de empleados"></div>
+</div>
 </section>
 <section class="look-privacy-inbox" id="merchantPrivacyPanel">
  <h3>Privacidad y solicitudes de clientes</h3>
@@ -3624,6 +3658,45 @@ async function employeeApi(action,data={},asOwner=false){
  if(!res.ok)throw new Error(obj?.error||'No se pudo conectar con el espacio de empleados');
  return obj;
 }
+
+let lookEmployeeHistorySequence=0;
+async function ownerLoadEmployeeHistory(){
+ const state=$('employeeHistoryState'),list=$('employeeHistoryList'),summary=$('employeeHistorySummary');
+ if(!state||!list||!summary||!session)return;
+ const sequence=++lookEmployeeHistorySequence;
+ const employee_id=$('employeeHistoryEmployee').value||'all';
+ const days=Number($('employeeHistoryDays').value||30);
+ state.textContent='Cargando movimientos…';
+ const data=await employeeApi('owner_history',{employee_id,days},true);
+ if(sequence!==lookEmployeeHistorySequence)return;
+ const rows=Array.isArray(data.events)?data.events:[];
+ const visits=rows.filter(e=>e.kind==='visit');
+ const redeemed=rows.filter(e=>e.kind==='redeem');
+ const amount=visits.reduce((sum,e)=>sum+(Number(e.sale_amount)||0),0);
+ const money=new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:2});
+ summary.innerHTML='<div><small>Compras registradas</small><strong>'+visits.length+'</strong></div>'+
+  '<div><small>Ventas registradas</small><strong>'+esc(money.format(amount))+'</strong></div>'+
+  '<div><small>Premios canjeados</small><strong>'+redeemed.length+'</strong></div>';
+ if(!rows.length){
+   list.innerHTML='<p class="muted" style="font-size:12px;margin:8px 0">No hay movimientos registrados por empleados para el filtro elegido.</p>';
+ }else{
+   list.innerHTML=rows.map(e=>{
+     const when=new Date(e.created_at);
+     const date=Number.isFinite(when.getTime())?when.toLocaleString('es-AR',{timeZone:'America/Argentina/Buenos_Aires',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'Fecha no disponible';
+     const purchase=e.kind==='visit';
+     const label=purchase?'Compra · +'+Math.max(0,Number(e.points)||0)+' punto':'Canje de premio';
+     const value=purchase&&e.sale_amount!=null?money.format(Number(e.sale_amount)):'Canje';
+     return '<div class="look-employee-history-item">'+
+       '<div><strong>'+esc(e.employee_name||'Empleado')+'</strong><span class="look-eh-kind"> · '+esc(label)+'</span>'+
+       '<div class="look-eh-client">Cliente: '+esc(e.client_name||'Cliente eliminado')+'</div></div>'+
+       '<div><div class="look-eh-amount">'+esc(value)+'</div><time>'+esc(date)+'</time></div></div>';
+   }).join('');
+ }
+ state.textContent=rows.length+' movimiento'+(rows.length===1?'':'s')+' registrado'+(rows.length===1?'':'s')+
+  (data.truncated?' · Se muestran solo los 500 más recientes; elegí un período más corto.':'')+
+  ' · Solo operaciones realizadas desde perfiles de empleados.';
+}
+
 async function ownerLoadEmployees(){
  const data=await employeeApi('owner_list',{},true),box=$('staffMemberList');
  if(!box)return;
@@ -3633,6 +3706,17 @@ async function ownerLoadEmployees(){
  +'<button type="button" class="secondary" data-employee-mode="'+(m.active?'deactivate':'activate')+'" data-employee-id="'+m.id+'">'+(m.active?'Desactivar':'Activar')+'</button></div></div>').join('')
  :'<p class="muted">Todavía no creaste empleados.</p>';
  $('openStaffWorkspace').hidden=!data.profile_id;
+ const historyFilter=$('employeeHistoryEmployee');
+ if(historyFilter){
+  const previous=historyFilter.value;
+  const staff=data.staff||[];
+  historyFilter.innerHTML='<option value="all">Todos los empleados</option>'+
+    staff.map(m=>'<option value="'+esc(m.id)+'">'+esc(m.name)+(m.active?'':' (inactivo)')+'</option>').join('');
+  historyFilter.value=staff.some(m=>m.id===previous)?previous:'all';
+  ownerLoadEmployeeHistory().catch(err=>{
+    $('employeeHistoryState').textContent='No se pudo cargar el historial: '+friendly(err);
+  });
+ }
 }
 async function openEmployeeSpace(profileId){
  if(!isUUID(profileId))throw new Error('Comercio inválido');
@@ -5558,6 +5642,14 @@ $('openStaffWorkspace').onclick=()=>{
  if(!p)return notify('Configurá el negocio primero.',true);
  const u=new URL(location.pathname,location.origin);u.searchParams.set('personal',p.id);window.open(u.href,'_blank','noopener');
 };
+$('employeeHistoryRefresh').onclick=()=>ownerLoadEmployeeHistory().catch(err=>{
+ $('employeeHistoryState').textContent='No se pudo cargar el historial: '+friendly(err);
+});
+$('employeeHistoryEmployee').onchange=$('employeeHistoryDays').onchange=()=>
+ ownerLoadEmployeeHistory().catch(err=>{
+  $('employeeHistoryState').textContent='No se pudo cargar el historial: '+friendly(err);
+ });
+
 $('staffMemberList').onclick=async e=>{
  const change=e.target.closest('[data-employee-change-pin]'),button=e.target.closest('[data-employee-mode]');
  if(change){
