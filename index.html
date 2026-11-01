@@ -3430,6 +3430,15 @@ body.app-starting{display:none!important}
   background-color:#f8e6db !important;
   background-image:linear-gradient(#f8e6db,#f8e6db) !important;
 }
+
+/* Safe dynamic Ponte Coqueta layer: image pixels are not auto-darkened by Samsung Internet. */
+#customer.pc-public .pc-art-live { pointer-events:none!important; }
+#customer.pc-public .pc-safe-live-image {
+ display:block!important;position:absolute!important;inset:0!important;
+ width:100%!important;height:100%!important;object-fit:fill!important;
+ max-width:none!important;max-height:none!important;filter:none!important;
+ user-select:none!important;pointer-events:none!important;
+}
 </style>
 </head>
 <body class="app-starting">
@@ -3843,6 +3852,69 @@ function lookRewardTitleHtml(reward){
  }
  return esc(label);
 }
+
+/* Ponte Coqueta: render variable loyalty values as a single vector image.
+   Samsung Internet's forced-dark algorithm transforms HTML colors placed
+   over artwork but leaves image pixels intact. This prevents black rectangles
+   and hides the old static numbers/text printed inside the artwork. */
+function pcRenderSafeImage(data){
+ const xml=value=>String(value==null?'':value).replace(/[&<>"']/g,ch=>({
+   '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'
+ })[ch]);
+ const goal=data.goal,points=data.points,visits=data.visits,percent=data.percent;
+ const reward=String(data.reward||'Tu premio');
+ const slots=Math.min(goal,10);
+ const rwSize=reward.length>27?43:reward.length>18?52:reward.length>12?67:88;
+ const cap=(s,n)=>String(s).length>n?String(s).slice(0,n-1)+'…':String(s);
+ let stamps='';
+ for(let i=0;i<slots;i++){
+   const checkpoint=Math.ceil((i+1)*goal/slots);
+   const done=points>=checkpoint;
+   const cx=39+(i+.5)*(1036/slots),cy=1257;
+   const r=slots>7?26:38;
+   stamps+='<g transform="translate('+cx+' '+cy+')">'
+     +'<circle r="'+r+'" fill="'+(done?'#87501f':'#f2eee8')+'" stroke="'+(done?'#bc854c':'#d6c9be')+'" stroke-width="3"/>'
+     +'<path d="M '+(-r*.63)+' '+(-r*.12)+' L '+(-r*.37)+' '+(-r*.48)+' H '+(r*.37)+' L '+(r*.63)+' '+(-r*.12)+' L 0 '+(r*.56)+' Z M '+(-r*.63)+' '+(-r*.12)+' H '+(r*.63)+' M '+(-r*.37)+' '+(-r*.48)+' L '+(-r*.15)+' '+(-r*.12)+' L 0 '+(r*.56)+' L '+(r*.15)+' '+(-r*.12)+' L '+(r*.37)+' '+(-r*.48)+'" fill="none" stroke="'+(done?'#fff2dc':'#a29589')+'" stroke-width="'+(slots>7?2.5:3.2)+'" stroke-linejoin="round"/>'
+     +'<text y="'+(r+34)+'" font-family="Arial,sans-serif" font-size="'+(slots>7?26:38)+'" fill="'+(done?'#92602f':'#766c65')+'" text-anchor="middle">'+checkpoint+'</text></g>';
+ }
+ const title=cap(data.message,48);
+ const subtitle=cap(data.sub,92);
+ const subFont=subtitle.length>70?29:subtitle.length>52?32:38;
+ const svg=[
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1114 2075" width="1114" height="2075">',
+  '<defs><linearGradient id="reward" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#26150d"/><stop offset="1" stop-color="#170f0b"/></linearGradient>',
+  '<linearGradient id="progress" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#a76c35"/><stop offset="1" stop-color="#d0a06a"/></linearGradient></defs>',
+  /* Solid image-backed masks conceal the printed demo content. */
+  '<rect x="274" y="618" width="799" height="215" rx="28" fill="url(#reward)"/>',
+  '<text x="298" y="677" fill="#d4ae92" font-family="Arial,sans-serif" font-size="34" letter-spacing="8">TU PREMIO</text>',
+  '<text x="298" y="764" fill="#ead0bc" font-family="Georgia,serif" font-size="'+rwSize+'">'+xml(cap(reward,55))+'</text>',
+  '<text x="298" y="814" fill="#d4ae92" font-family="Arial,sans-serif" font-size="43" letter-spacing="4">'+xml('AL LLEGAR A '+goal+' PUNTOS')+'</text>',
+  '<rect x="72" y="963" width="548" height="133" fill="#ffffff"/>',
+  '<text x="79" y="1080" fill="#2c1b16" font-family="Georgia,serif" font-size="159" font-weight="700">'+points+'</text>',
+  '<text x="'+(94+String(points).length*94)+'" y="1075" fill="#645b56" font-family="Arial,sans-serif" font-size="51">/ '+goal+' puntos</text>',
+  '<rect x="865" y="963" width="196" height="134" fill="#ffffff"/>',
+  '<text x="963" y="1072" text-anchor="middle" fill="#a36c37" font-family="Georgia,serif" font-size="84" font-weight="700">'+percent+'%</text>',
+  '<rect x="73" y="1112" width="969" height="33" rx="17" fill="#eadfd5"/>',
+  '<rect x="73" y="1112" width="'+(969*percent/100)+'" height="33" rx="17" fill="url(#progress)"/>',
+  '<rect x="39" y="1180" width="1036" height="182" fill="#fff"/>',
+  stamps,
+  '<rect x="0" y="1368" width="1114" height="277" rx="34" fill="#351c11"/>',
+  '<text x="557" y="1495" text-anchor="middle" fill="#f7ded1" font-family="Georgia,serif" font-size="65">'+xml(title)+'</text>',
+  '<text x="557" y="1560" text-anchor="middle" fill="#ead2c3" font-family="Arial,sans-serif" font-size="'+subFont+'">'+xml(subtitle)+'</text>',
+  '<rect x="47" y="1655" width="1020" height="123" fill="#fff"/>',
+  '<path d="M88 1700 H130 L135 1752 H83 Z M96 1700 V1689 A13 13 0 0 1 122 1689 V1700" fill="none" stroke="#ab845c" stroke-width="5" stroke-linejoin="round"/>',
+  '<text x="157" y="1717" fill="#211915" font-family="Arial,sans-serif" font-size="43" font-weight="700">'+xml(visits+' compra'+(visits===1?'':'s')+' confirmada'+(visits===1?'':'s'))+'</text>',
+  '<text x="157" y="1761" fill="#756b65" font-family="Arial,sans-serif" font-size="37">Actualizá para ver tus últimos puntos.</text>',
+  '</svg>'
+ ].join('');
+ const image=document.createElement('img');
+ image.className='pc-safe-live-image';
+ image.alt='Puntos: '+points+' de '+goal+'. Premio: '+reward+'. '+data.message+' '+data.sub+'. '+visits+' compras registradas.';
+ image.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+ image.draggable=false;
+ $('cardState').replaceChildren(image);
+}
+
 function customerPublicHtml(p,card){
  const referred=new URLSearchParams(location.search).get('ref');
  const form=`<form id="customerForm" class="form look-registration-form" style="margin-top:10px" ${card?'hidden':''}><p class="muted">Registrate con tu nombre y WhatsApp. Tus puntos se acreditan en el comercio.</p><div><label for="customerName">Tu nombre</label><input id="customerName" maxlength="100" autocomplete="name" required></div><div><label for="customerPhone">Tu teléfono</label><input id="customerPhone" inputmode="tel" maxlength="30" autocomplete="tel" required></div>${referred?`<div class="referral-welcome">🤝 Viniste recomendado por un cliente de ${esc(p.business)}. El beneficio se activa con tu primera visita.</div>`:''}${detailFields('customer',{registration:true})}<small>Usamos tu nombre y teléfono para crear la tarjeta. El cumpleaños es opcional, únicamente para beneficios del comercio. Podés actualizar tus datos o pedir la baja cuando quieras.</small><label class="look-consent-check"><input type="checkbox" id="customerPrivacyConsent" required><span>Leí la <a href="privacy.html" target="_blank" rel="noopener">información de privacidad</a> y acepto registrar mis datos para crear la tarjeta.</span></label>
@@ -5232,19 +5304,7 @@ function renderCard(c){
    else if(points>=Math.min(3,goal)){message='¡Vas muy bien!';sub='Ya completaste el '+percent+'% del camino a tu premio.';}
    else if(points>0){message='¡Seguí sumando!';sub='Te faltan '+missing+' puntos para conseguir '+reward+'.';}
    else{message='Tu fidelidad empieza acá';sub='Sumá puntos con cada compra y acercate a tu premio.';}
-   const slots=Math.min(goal,10);
-   const stamps=Array.from({length:slots},(_,i)=>{
-     const checkpoint=Math.ceil((i+1)*goal/slots);
-     return '<span class="pc-art-stamp '+(points>=checkpoint?'done':'')+'"><b>'+pcIcon('diamond')+'</b><small>'+checkpoint+'</small></span>';
-   }).join('');
-   $('cardState').innerHTML=`
-     <div class="pc-art-overlay pc-art-reward"><small>TU PREMIO</small><strong>${esc(reward)}</strong><span>AL LLEGAR A ${goal} PUNTOS</span></div>
-     <div class="pc-art-overlay pc-art-count"><strong>${points}</strong><span>/ ${goal} puntos</span></div>
-     <strong class="pc-art-overlay pc-art-percent">${percent}%</strong>
-     <div class="pc-art-overlay pc-art-meter" role="progressbar" aria-label="Progreso de puntos" aria-valuemin="0" aria-valuemax="${goal}" aria-valuenow="${Math.min(points,goal)}"><i style="width:${percent}%"></i></div>
-     <div class="pc-art-overlay pc-art-stamps" style="grid-template-columns:repeat(${slots},minmax(0,1fr))">${stamps}</div>
-     <div class="pc-art-overlay pc-art-message-copy"><strong>${esc(message)}</strong><small>${esc(sub)}</small></div>
-     <div class="pc-art-overlay pc-art-visits"><svg class="pc-art-bag" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l1 12H4L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><div class="pc-art-visits-copy"><strong>${visits} compra${visits===1?'':'s'} confirmada${visits===1?'':'s'}</strong><small>Actualizá para ver tus últimos puntos.</small></div></div>`;
+   pcRenderSafeImage({goal,points,visits,reward,percent,message,sub});
    return;
  }
  if(!c){$('cardState').innerHTML='';return;} if(!c){$('cardState').innerHTML='';return;}
