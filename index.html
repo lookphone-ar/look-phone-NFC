@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="light">
 <meta name="theme-color" content="#101827"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="LOOK"><link rel="apple-touch-icon" sizes="180x180" href="assets/look-home-180.png?v=20261028"><link rel="icon" type="image/svg+xml" href="assets/look-app-icon.svg?v=20261027"><link rel="manifest" href="manifest.webmanifest?v=20261027">
 <script src="assets/card-install.js?v=20261029wa1"></script><link rel="stylesheet" href="assets/card-install.css?v=20261029wa1">
 <meta name="referrer" content="no-referrer"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><title>LOOK · Fidelización y ventas</title>
@@ -3407,6 +3407,29 @@ body.app-starting{display:none!important}
 #admin .look-client-birthdays-fold .birthday-sections{padding:9px!important;margin:0!important;gap:7px!important}
 #admin .look-client-birthdays-fold .birthday-box{margin:0!important;padding:10px!important}
 #admin .look-client-birthdays-fold .birthday-box h3{font-size:14px!important;margin:0 0 7px!important}
+
+/* LOOK: preserve merchant artwork in Android dark mode.
+   Branded loyalty cards have intentional fixed palettes; Chromium/Samsung
+   auto-darkening must not recolor live text overlays over light artwork. */
+:root, html, body { color-scheme: only light; }
+#customer.pc-public,
+#customer.pc-public .pc-art-card,
+#customer.pc-public .pc-art-live,
+#customer.pc-public .pc-art-overlay,
+#customer.pc-public .pc-art-extra { color-scheme: only light !important; }
+/* Flat overlays are rendered as images as a fallback for Android browsers
+   whose forced-dark algorithm still alters CSS background-color surfaces. */
+#customer.pc-public .pc-art-count,
+#customer.pc-public .pc-art-percent,
+#customer.pc-public .pc-art-stamps,
+#customer.pc-public .pc-art-visits {
+  background-color:#fff !important;
+  background-image:linear-gradient(#fff,#fff) !important;
+}
+#customer.pc-public .pc-art-message-copy {
+  background-color:#f8e6db !important;
+  background-image:linear-gradient(#f8e6db,#f8e6db) !important;
+}
 </style>
 </head>
 <body class="app-starting">
