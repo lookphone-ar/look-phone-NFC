@@ -4743,7 +4743,7 @@ async function loadAdmin(){
   const profileOptions=profiles.map(p=>`<option value="${p.id}">${esc(p.business)} — ${esc(p.name)}</option>`).join('');
   $('clientProfile').innerHTML=profileOptions;$('rewardProfile').innerHTML=profileOptions;
   if(activeId){$('clientProfile').value=activeId;$('rewardProfile').value=activeId;}
-  renderRewardForm();renderClients();renderQuickVisit();renderInsights();renderCampaigns();renderLoyalty();renderContactHistory();renderGrowthTools();renderLaunchChecklist();view('admin');if($('merchantStaffPanel'))ownerLoadEmployees().catch(e=>console.warn('Empleados:',e.message));setAdminTab(sessionStorage.getItem(ADMIN_TAB_KEY)||'home',{scroll:false});
+  renderRewardForm();renderClients();renderQuickVisit();loadCardDeliveryQueue().catch(e=>console.warn('Sincronización de tarjetas:',e.message));renderInsights();renderCampaigns();renderLoyalty();renderContactHistory();renderGrowthTools();renderLaunchChecklist();view('admin');if($('merchantStaffPanel'))ownerLoadEmployees().catch(e=>console.warn('Empleados:',e.message));setAdminTab(sessionStorage.getItem(ADMIN_TAB_KEY)||'home',{scroll:false});
   try{const old=JSON.parse(localStorage.getItem('lookphone_nfc_v1')||'null');$('legacy').hidden=!old?.profiles?.length;}catch{}
 }
 
@@ -4765,31 +4765,62 @@ function merchantCardWhatsAppUrl(client,profile){
  const message='¡Hola '+String(client.name||'')+'! 👋\n\nTe compartimos tu tarjeta de beneficios de '+String(profile.business||'LOOK')+'. 🎁\n\nEntrá acá cuando quieras para ver tus puntos y premios actualizados:\n'+cardUrl(profile,client.card_token)+'\n\nGuardá este mensaje en WhatsApp para tener siempre tu tarjeta a mano. Es un enlace personal, no lo compartas.';
  return 'https://wa.me/'+phone+'?text='+encodeURIComponent(message);
 }
+
+/* Pendientes sincronizados en Supabase: localStorage solo importa versiones anteriores. */
 const CARD_DELIVERY_QUEUE_KEY='look_card_delivery_pending_v1';
+let cardDeliveryRemote=[],cardDeliveryProfileId=null,cardDeliveryRequestId=0;
 function cardDeliveryEntries(){
  try{const rows=JSON.parse(localStorage.getItem(CARD_DELIVERY_QUEUE_KEY)||'[]');return Array.isArray(rows)?rows.filter(r=>isUUID(r.profileId)&&isUUID(r.clientId)).slice(-100):[];}catch{return [];}
 }
+async function loadCardDeliveryQueue(){
+ if(!session?.user?.id||$('admin')?.hidden)return;
+ const profileId=currentProfileId();
+ if(!isUUID(profileId))return;
+ const seq=++cardDeliveryRequestId;
+ const oldQueue=cardDeliveryEntries(),migrated=[];
+ for(const item of oldQueue.filter(x=>x.profileId===profileId&&clients.some(c=>c.id===x.clientId))){
+  try{await rpc('nfc_owner_card_delivery_set',{p_client:item.clientId,p_action:'pending'},true);migrated.push(item.clientId);}
+  catch(error){console.warn('Pendiente sin migrar:',error.message);}
+ }
+ if(migrated.length){
+  try{localStorage.setItem(CARD_DELIVERY_QUEUE_KEY,JSON.stringify(oldQueue.filter(x=>!(x.profileId===profileId&&migrated.includes(x.clientId)))));}catch{}
+ }
+ const rows=await rpc('nfc_owner_card_delivery_list',{p_profile:profileId},true);
+ if(seq!==cardDeliveryRequestId||profileId!==currentProfileId())return;
+ cardDeliveryProfileId=profileId;cardDeliveryRemote=Array.isArray(rows)?rows:[];
+ renderCardDeliveryQueue();
+}
 function enqueueFirstPurchaseCard(client){
  if(!isUUID(client?.id)||!isUUID(client?.profile_id))return false;
- const queue=cardDeliveryEntries();
- if(queue.some(r=>r.profileId===client.profile_id&&r.clientId===client.id))return false;
- queue.push({profileId:client.profile_id,clientId:client.id});
- try{localStorage.setItem(CARD_DELIVERY_QUEUE_KEY,JSON.stringify(queue.slice(-100)));return true;}catch{return false;}
+ loadCardDeliveryQueue().catch(e=>console.warn('Pendientes:',e.message));
+ return true;
 }
 function removePendingCardDelivery(clientId){
  const profileId=currentProfileId();
- const queue=cardDeliveryEntries().filter(r=>!(r.clientId===clientId&&r.profileId===profileId));
- try{localStorage.setItem(CARD_DELIVERY_QUEUE_KEY,JSON.stringify(queue));}catch{}
+ const remaining=cardDeliveryEntries().filter(r=>!(r.clientId===clientId&&r.profileId===profileId));
+ try{localStorage.setItem(CARD_DELIVERY_QUEUE_KEY,JSON.stringify(remaining));}catch{}
+ cardDeliveryRemote=cardDeliveryRemote.filter(r=>r.clientId!==clientId);
  renderCardDeliveryQueue();
+}
+async function confirmPendingCardDelivery(clientId){
+ if(!isUUID(clientId)||!clients.some(c=>c.id===clientId&&c.profile_id===currentProfileId()))throw new Error('Cliente no disponible');
+ await rpc('nfc_owner_card_delivery_set',{p_client:clientId,p_action:'sent'},true);
+ await loadCardDeliveryQueue();
+ notify('Tarjeta marcada como enviada. Sincronizada con otros dispositivos.');
 }
 function renderCardDeliveryQueue(){
  const box=$('cardDeliveryQueue');if(!box)return;
  const p=profiles.find(x=>x.id===currentProfileId());
- const rows=p?cardDeliveryEntries().filter(r=>r.profileId===p.id).map(r=>clients.find(c=>c.id===r.clientId&&c.profile_id===p.id)).filter(Boolean):[];
+ const rows=p&&cardDeliveryProfileId===p.id?cardDeliveryRemote.map(r=>clients.find(c=>c.id===r.clientId&&c.profile_id===p.id)).filter(Boolean):[];
  if(!rows.length){box.hidden=true;box.innerHTML='';return;}
  const opened=box.querySelector('details')?.open||false;
  box.hidden=false;
- box.innerHTML=`<details ${opened?'open':''}><summary>📲 Tarjetas para enviar por WhatsApp cuando tengas tiempo (${rows.length})</summary><p>Las compras ya están registradas. Enviá el enlace una sola vez; no hace falta mandarlo después de cada compra. WhatsApp abrirá el mensaje preparado: tocá «Enviar» en el chat y después «Quitar de pendientes» acá.</p>${rows.slice().reverse().map(c=>{const url=merchantCardWhatsAppUrl(c,p);return `<div class="card-delivery-row"><span><strong>${esc(c.name)}</strong><small style="display:block;color:#586a60">${esc(c.phone||'Sin teléfono')}</small></span><div class="row">${url?`<a href="${esc(url)}" class="button whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Abrir WhatsApp para enviar tarjeta a ${esc(c.name)}">Enviar tarjeta</a>`:'<small>Revisá el WhatsApp del cliente</small>'}<button type="button" class="secondary" data-card-delivery-done="${esc(c.id)}">Quitar de pendientes</button></div></div>`;}).join('')}</details>`;
+ const items=rows.map(c=>{
+  const url=merchantCardWhatsAppUrl(c,p);
+  const action=url?'<a href="'+esc(url)+'" class="button whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Abrir WhatsApp para enviar tarjeta a '+esc(c.name)+'">Enviar tarjeta</a>':'<small>Revisá el teléfono del cliente</small>';
+  return '<div class="card-delivery-row"><span><strong>'+esc(c.name)+'</strong><small style="display:block;color:#586a60">'+esc(c.phone||'Sin teléfono')+'</small></span><div class="row">'+action+'<button type="button" class="secondary" data-card-delivery-done="'+esc(c.id)+'">✓ Ya la envié</button></div></div>';
+ }).join('');
+ box.innerHTML='<details '+(opened?'open':'')+'><summary>📲 Tarjetas pendientes de enviar ('+rows.length+')</summary><p>Enviá el mensaje por WhatsApp y, después de tocar «Enviar» en el chat, seleccioná «✓ Ya la envié». El cambio se sincroniza entre celular y computadora. Abrir WhatsApp solo no confirma el envío.</p>'+items+'</details>';
 }
 function argentinaWhatsApp(phone){
   let value=digits(String(phone||''));
@@ -4799,6 +4830,10 @@ function argentinaWhatsApp(phone){
   value=value.replace(/^0/,'').replace(/^(\d{2,4})15(\d{6,8})$/,'$1$2');
   return value.length>=8&&value.length<=12?'549'+value:'';
 }
+
+window.addEventListener('focus',()=>{if(session?.user?.id&&!$('admin').hidden)loadCardDeliveryQueue().catch(()=>{});});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&session?.user?.id&&!$('admin').hidden)loadCardDeliveryQueue().catch(()=>{});});
+window.setInterval(()=>{if(document.visibilityState==='visible'&&session?.user?.id&&!$('admin').hidden)loadCardDeliveryQueue().catch(()=>{});},30000);
 const CLIENT_CATEGORIES={new:{label:'Nuevo',min:0,max:2},frequent:{label:'Frecuente',min:3,max:9},vip:{label:'VIP',min:10,max:Infinity}};
 function realVisitCount(client){return events.filter(event=>event.client_id===client.id&&event.kind==='visit').length;}
 function automaticClientCategory(client){const visits=realVisitCount(client);return Object.entries(CLIENT_CATEGORIES).find(([,rule])=>visits>=rule.min&&visits<=rule.max)?.[0]||'new';}
@@ -5541,7 +5576,7 @@ bindBusy('recoveryForm','submit',async()=>{await request('/auth/v1/user',{method
 bindBusy('logout','click',async()=>{try{await raw('/auth/v1/logout',{method:'POST',token:session?.access_token});}finally{saveSession(null);profiles=[];clients=[];isPlatformAdmin=false;cancelEdit();clearMerchantTheme();view('auth');}});
 bindBusy('profileForm','submit',async()=>{const data=profileData();const wasEditing=!!editing;if(editing)await request('/rest/v1/nfc_profiles?id=eq.'+editing,{method:'PATCH',body:data},true);else{if(profiles.length)throw new Error('Tu cuenta ya tiene un negocio. Cada cuenta comercial admite un solo perfil.');await request('/rest/v1/nfc_profiles',{method:'POST',body:data},true);}cancelEdit();await loadAdmin();notify(wasEditing?'Cambios guardados.':'Negocio guardado online.');});
 if($('activeBusiness'))$('activeBusiness').onchange=()=>switchActiveProfile($('activeBusiness').value);
-$('cancelEdit').onclick=cancelEdit;$('profiles').onclick=profileAction;$('clients').onclick=e=>{const summary=e.target.closest('.look-cmore summary');if(summary){const current=summary.closest('.look-cmore');$('clients').querySelectorAll('.look-cmore[open]').forEach(d=>{if(d!==current)d.open=false;});}clientAction(e);};$('clients').onchange=clientCategoryChange;$('birthdays').onclick=clientAction;$('clientSearch').oninput=renderClients;$('showArchivedClients').onchange=()=>{$('clientCategory').value='all';renderClients();};$('quickVisitSearch').oninput=searchQuickVisitClients;$('quickVisitSearch').onfocus=refreshQuickVisitClients;$('quickVisitResults').onclick=quickVisitAction;$('cardDeliveryQueue').onclick=e=>{const done=e.target.closest('[data-card-delivery-done]');if(done)removePendingCardDelivery(done.dataset.cardDeliveryDone);};$('quickVisitRefresh').onclick=()=>refreshQuickVisitClients();$('clientSort').onchange=renderClients;$('clientCategory').onchange=renderClients;$('closeClientHistory').onclick=closeClientHistory;$('clientHistoryContent').onclick=editClientVisitAmount;$('rewardProfile').onchange=()=>switchActiveProfile($('rewardProfile').value);$('rewardGoal').oninput=updateRewardPreview;$('rewardName').oninput=updateRewardPreview;bindBusy('rewardForm','submit',async()=>{
+$('cancelEdit').onclick=cancelEdit;$('profiles').onclick=profileAction;$('clients').onclick=e=>{const summary=e.target.closest('.look-cmore summary');if(summary){const current=summary.closest('.look-cmore');$('clients').querySelectorAll('.look-cmore[open]').forEach(d=>{if(d!==current)d.open=false;});}clientAction(e);};$('clients').onchange=clientCategoryChange;$('birthdays').onclick=clientAction;$('clientSearch').oninput=renderClients;$('showArchivedClients').onchange=()=>{$('clientCategory').value='all';renderClients();};$('quickVisitSearch').oninput=searchQuickVisitClients;$('quickVisitSearch').onfocus=refreshQuickVisitClients;$('quickVisitResults').onclick=quickVisitAction;$('cardDeliveryQueue').onclick=async e=>{const done=e.target.closest('[data-card-delivery-done]');if(!done)return;done.disabled=true;try{await confirmPendingCardDelivery(done.dataset.cardDeliveryDone);}catch(err){notify(friendly(err),true);done.disabled=false;}};$('quickVisitRefresh').onclick=()=>refreshQuickVisitClients();$('clientSort').onchange=renderClients;$('clientCategory').onchange=renderClients;$('closeClientHistory').onclick=closeClientHistory;$('clientHistoryContent').onclick=editClientVisitAmount;$('rewardProfile').onchange=()=>switchActiveProfile($('rewardProfile').value);$('rewardGoal').oninput=updateRewardPreview;$('rewardName').oninput=updateRewardPreview;bindBusy('rewardForm','submit',async()=>{
  const status=$('rewardSaveStatus');
  try{
   const p=profiles.find(p=>p.id===$('rewardProfile').value);
