@@ -3462,6 +3462,52 @@ body.app-starting{display:none!important}
 .look-employee-history-item .look-eh-amount{font-size:12px;font-weight:800;color:#33475b;text-align:right}
 .look-employee-history-item time{font-size:10px;color:#708093;text-align:right}
 @media(max-width:420px){.look-employee-history-heading h4{font-size:15px}.look-employee-history-heading p{font-size:11px}.look-employee-history-summary strong{font-size:14px}.look-employee-history-summary>div{padding:7px}.look-employee-history-item{padding:8px}}
+
+/* LOOK PHONE fixed theme: image-backed dynamic values and masks.
+   Prevent Samsung Internet dark mode from changing brand colors. */
+#customer.lp-master-public,
+#customer.lp-master-public .lp-master-wrap,
+#customer.lp-master-public .lp-master-extra,
+body.customer-mode .lp-fixed-nav,
+body.customer-mode .lp-notify-sheet{color-scheme:only light!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;forced-color-adjust:none!important}
+#customer.lp-master-public #cardState{
+ position:absolute!important;inset:0!important;z-index:6!important;
+ pointer-events:none!important;background:none!important;
+}
+#customer.lp-master-public .lp-safe-live-image{
+ display:block!important;width:100%!important;height:100%!important;
+ position:absolute!important;inset:0!important;max-width:none!important;
+ max-height:none!important;object-fit:fill!important;filter:none!important;
+ pointer-events:none!important;user-select:none!important;
+}
+#customer.lp-master-public .lp-master-wrap,
+#customer.lp-master-public .lp-master-extra,
+#customer.lp-master-public .lp-master-nav-cover,
+#customer.lp-master-public .lp-master-social-bg,
+body.customer-mode .lp-fixed-nav{
+ background-color:transparent!important;background-image:linear-gradient(#ffffff,#ffffff)!important;
+}
+#customer.lp-master-public .lp-crisp-logo-mask,
+#customer.lp-master-public .lp-crisp-hero-mask,
+#customer.lp-master-public .lp-crisp-progress-label-mask,
+#customer.lp-master-public .lp-live-head-mask,
+#customer.lp-master-public .lp-crisp-reward-mask{
+ background-color:transparent!important;
+ -webkit-print-color-adjust:exact!important;
+}
+#customer.lp-master-public .lp-crisp-reward-mask{
+ background-image:linear-gradient(90deg,#fff 0%,#fff 80%,transparent 100%)!important;
+}
+#customer.lp-master-public .lp-live-head-mask{
+ background-image:linear-gradient(#ffffff,#ffffff)!important;
+}
+#customer.lp-master-public .lp-crisp-progress-label-mask{
+ background-image:linear-gradient(#ffffff,#ffffff)!important;
+}
+#customer.lp-master-public .lp-master-extra .customer-growth section,
+#customer.lp-master-public .lp-master-extra .card{
+ background-color:transparent!important;background-image:linear-gradient(#fff,#fff)!important;
+}
 </style>
 </head>
 <body class="app-starting">
@@ -3941,6 +3987,58 @@ function lookRewardTitleHtml(reward){
    Samsung Internet's forced-dark algorithm transforms HTML colors placed
    over artwork but leaves image pixels intact. This prevents black rectangles
    and hides the old static numbers/text printed inside the artwork. */
+
+/* Look Phone: one immutable graphic layer for customer numbers and status.
+   Android forced-dark modes leave rendered image pixels unchanged. */
+function lpRenderSafeImage(data){
+ const xml=value=>String(value==null?'':value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[ch]));
+ const short=(v,n)=>String(v).length>n?String(v).slice(0,n-1)+'…':String(v);
+ const {points,goal,visits,percent}=data;
+ const slots=Math.min(goal,5);
+ const head=short(data.message,37),sub=short(data.sub,62);
+ let badges='';
+ for(let i=0;i<slots;i++){
+  const checkpoint=Math.ceil((i+1)*goal/slots);
+  const done=points>=checkpoint;
+  const cx=75+(i+.5)*(600/slots),cy=1043,r=slots>3?40:49;
+  const p=(x,y)=>cx+x+','+(cy+y);
+  badges+='<path d="M '+p(-r*.75,-r*.53)+' L '+p(0,-r)+' L '+p(r*.75,-r*.53)+' L '+p(r*.75,r*.53)+' L '+p(0,r)+' L '+p(-r*.75,r*.53)+' Z" fill="'+(done?'#0876eb':'#eff3f9')+'" stroke="'+(done?'#32adff':'#c7d0de')+'" stroke-width="4"/>';
+  badges+='<path d="M '+p(-r*.59,-r*.43)+' L '+p(0,-r*.79)+' L '+p(r*.59,-r*.43)+' L '+p(r*.59,r*.43)+' L '+p(0,r*.79)+' L '+p(-r*.59,r*.43)+' Z" fill="none" stroke="'+(done?'#a6e9ff':'#d2d9e4')+'" stroke-width="2.4"/>';
+  if(done)badges+='<path d="M '+p(-r*.34,0)+' L '+p(-r*.07,r*.27)+' L '+p(r*.39,-r*.34)+'" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>';
+  else badges+='<text x="'+cx+'" y="'+(cy+11)+'" text-anchor="middle" font-family="Arial,sans-serif" font-size="32" font-weight="700" fill="#6a7589">'+checkpoint+'</text>';
+ }
+ const countSize=String(points).length>3?45:String(points).length>2?52:72;
+ const sv=[
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 1422" width="750" height="1422">',
+  '<defs><linearGradient id="lpbar" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#1686ff"/><stop offset="1" stop-color="#2bc3ff"/></linearGradient></defs>',
+  '<rect x="33" y="834" width="215" height="120" fill="#ffffff"/>',
+  '<text x="48" y="928" fill="#071426" font-family="Arial,sans-serif" font-size="'+countSize+'" font-weight="750">'+points+'</text>',
+  '<text x="'+(67+String(points).length*(countSize*.63))+'" y="921" fill="#667487" font-family="Arial,sans-serif" font-size="33">/ '+goal+'</text>',
+  '<rect x="489" y="816" width="226" height="57" rx="22" fill="#f5f7fb"/>',
+  '<text x="602" y="852" text-anchor="middle" fill="#53637a" font-family="Arial,sans-serif" font-size="19">'+points+' de '+goal+' puntos</text>',
+  '<rect x="563" y="875" width="160" height="76" fill="#ffffff"/>',
+  '<text x="707" y="925" text-anchor="end" fill="#1686ff" font-family="Arial,sans-serif" font-weight="750" font-size="44">'+percent+'%</text>',
+  '<rect x="35" y="947" width="682" height="25" fill="#ffffff"/>',
+  '<rect x="39" y="952" width="670" height="13" rx="7" fill="#e9edf3"/>',
+  '<rect x="39" y="952" width="'+(670*percent/100)+'" height="13" rx="7" fill="url(#lpbar)"/>',
+  '<rect x="30" y="975" width="690" height="172" fill="#ffffff"/>',
+  badges,
+  '<rect x="101" y="1157" width="619" height="90" fill="#ffffff"/>',
+  '<text x="109" y="1198" fill="#101c30" font-family="Arial,sans-serif" font-weight="700" font-size="29">'+xml(head)+'</text>',
+  '<text x="109" y="1231" fill="#647389" font-family="Arial,sans-serif" font-size="19" textLength="'+(sub.length>48?560:Math.max(1,sub.length*10))+'" lengthAdjust="spacingAndGlyphs">'+xml(sub)+'</text>',
+  '<rect x="89" y="1255" width="638" height="60" fill="#ffffff"/>',
+  '<text x="104" y="1291" fill="#1d2e47" font-family="Arial,sans-serif" font-weight="650" font-size="18">'+xml(visits+' visita'+(visits===1?'':'s')+' confirmada'+(visits===1?'':'s'))+'</text>',
+  '<text x="358" y="1291" fill="#6b788b" font-family="Arial,sans-serif" font-size="17">· Actualizá para ver tus últimos puntos.</text>',
+  '</svg>'
+ ].join('');
+ const image=document.createElement('img');
+ image.className='lp-safe-live-image';
+ image.alt='Puntos '+points+' de '+goal+'. '+percent+'%. '+data.message+'. '+data.sub+'. '+visits+' visitas.';
+ image.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(sv);
+ image.draggable=false;
+ $('cardState').replaceChildren(image);
+}
+
 function pcRenderSafeImage(data){
  const xml=value=>String(value==null?'':value).replace(/[&<>"']/g,ch=>({
    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'
@@ -4743,7 +4841,7 @@ async function loadAdmin(){
   const profileOptions=profiles.map(p=>`<option value="${p.id}">${esc(p.business)} — ${esc(p.name)}</option>`).join('');
   $('clientProfile').innerHTML=profileOptions;$('rewardProfile').innerHTML=profileOptions;
   if(activeId){$('clientProfile').value=activeId;$('rewardProfile').value=activeId;}
-  renderRewardForm();renderClients();renderQuickVisit();loadCardDeliveryQueue().catch(e=>console.warn('Sincronización de tarjetas:',e.message));renderInsights();renderCampaigns();renderLoyalty();renderContactHistory();renderGrowthTools();renderLaunchChecklist();view('admin');if($('merchantStaffPanel'))ownerLoadEmployees().catch(e=>console.warn('Empleados:',e.message));setAdminTab(sessionStorage.getItem(ADMIN_TAB_KEY)||'home',{scroll:false});
+  renderRewardForm();renderClients();renderQuickVisit();renderInsights();renderCampaigns();renderLoyalty();renderContactHistory();renderGrowthTools();renderLaunchChecklist();view('admin');loadCardDeliveryQueue().catch(e=>console.warn('Sincronización de tarjetas:',e.message));if($('merchantStaffPanel'))ownerLoadEmployees().catch(e=>console.warn('Empleados:',e.message));setAdminTab(sessionStorage.getItem(ADMIN_TAB_KEY)||'home',{scroll:false});
   try{const old=JSON.parse(localStorage.getItem('lookphone_nfc_v1')||'null');$('legacy').hidden=!old?.profiles?.length;}catch{}
 }
 
@@ -5406,16 +5504,7 @@ function renderCard(c){
    else if(percent>=50){message='¡Vas muy bien!';sub='Ya completaste '+percent+'% del camino a tu premio.';}
    else if(points>0){message='¡Seguí sumando!';sub='Te faltan '+missing+' puntos para conseguir '+reward+'.';}
    else{message='Tu próximo premio empieza acá';sub='Sumá puntos con tus visitas y acercate a '+reward+'.';}
-   const slots=Math.min(goal,5);
-   const stamps=Array.from({length:slots},(_,i)=>{const checkpoint=Math.ceil((i+1)*goal/slots);return '<span class="lp-dyn-stamp '+(points>=checkpoint?'done':'')+'">'+(points>=checkpoint?'✓':checkpoint)+'</span>';}).join('');
-   $('cardState').innerHTML=`
-     <div class="lp-dyn-mask lp-dyn-count"><b>${points}</b><span>/ ${goal}</span></div>
-     <div class="lp-dyn-mask lp-dyn-chip">${points} de ${goal} puntos</div>
-     <div class="lp-dyn-mask lp-dyn-pct">${percent}%</div>
-     <div class="lp-dyn-mask lp-dyn-bar-bg"><div class="lp-dyn-bar-fill" style="width:${percent}%"></div></div>
-     <div class="lp-dyn-mask lp-dyn-stamps">${stamps}</div>
-     <div class="lp-dyn-mask lp-dyn-message"><strong>${esc(message)}</strong><small>${esc(sub)}</small></div>
-     <div class="lp-dyn-mask lp-dyn-visits"><b>${visits} visita${visits===1?'':'s'} confirmada${visits===1?'':'s'}</b><span>• Actualizá para ver tus últimos puntos.</span></div>`;
+   lpRenderSafeImage({goal,points,visits,percent,message,sub});
    return;
  }
  if(isPonteCoqueta(customerProfile)){
