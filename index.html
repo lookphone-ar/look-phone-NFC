@@ -3508,6 +3508,23 @@ body.customer-mode .lp-fixed-nav{
 #customer.lp-master-public .lp-master-extra .card{
  background-color:transparent!important;background-image:linear-gradient(#fff,#fff)!important;
 }
+
+/* Additional image-backed patches for Android browsers which ignore color-scheme. */
+#customer.lp-master-public .lp-crisp-logo-mask{
+ background-color:transparent!important;
+ background-image:linear-gradient(#050505,#050505)!important;
+}
+#customer.lp-master-public .lp-crisp-hero-mask{
+ background-color:transparent!important;
+ background-image:linear-gradient(90deg,#ffffff 0%,#ffffff 89%,transparent 100%)!important;
+}
+#customer.lp-master-public .lp-master-extra:before{
+ background-color:transparent!important;background-image:linear-gradient(#ffffff,#ffffff)!important;
+}
+body.customer-mode .lp-notify-sheet,
+body.customer-mode .lp-notify-item{
+ background-color:transparent!important;background-image:linear-gradient(#ffffff,#ffffff)!important;
+}
 </style>
 </head>
 <body class="app-starting">
@@ -4000,7 +4017,7 @@ function lpRenderSafeImage(data){
  for(let i=0;i<slots;i++){
   const checkpoint=Math.ceil((i+1)*goal/slots);
   const done=points>=checkpoint;
-  const cx=75+(i+.5)*(600/slots),cy=1043,r=slots>3?40:49;
+  const cx=46.5+(i+.5)*(657/slots),cy=1043,r=slots>3?40:49;
   const p=(x,y)=>cx+x+','+(cy+y);
   badges+='<path d="M '+p(-r*.75,-r*.53)+' L '+p(0,-r)+' L '+p(r*.75,-r*.53)+' L '+p(r*.75,r*.53)+' L '+p(0,r)+' L '+p(-r*.75,r*.53)+' Z" fill="'+(done?'#0876eb':'#eff3f9')+'" stroke="'+(done?'#32adff':'#c7d0de')+'" stroke-width="4"/>';
   badges+='<path d="M '+p(-r*.59,-r*.43)+' L '+p(0,-r*.79)+' L '+p(r*.59,-r*.43)+' L '+p(r*.59,r*.43)+' L '+p(0,r*.79)+' L '+p(-r*.59,r*.43)+' Z" fill="none" stroke="'+(done?'#a6e9ff':'#d2d9e4')+'" stroke-width="2.4"/>';
