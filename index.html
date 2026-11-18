@@ -4881,27 +4881,19 @@ function merchantCardWhatsAppUrl(client,profile){
  return 'https://wa.me/'+phone+'?text='+encodeURIComponent(message);
 }
 
-/* Pendientes sincronizados en Supabase: localStorage solo importa versiones anteriores. */
+/* La cola de Supabase es la única fuente de verdad.
+   No importar pendientes antiguos del navegador: podían reaparecer al registrar un cliente. */
 const CARD_DELIVERY_QUEUE_KEY='look_card_delivery_pending_v1';
 let cardDeliveryRemote=[],cardDeliveryProfileId=null,cardDeliveryRequestId=0;
-// Impide que una respuesta vieja vuelva a mostrar una tarjeta durante o después de confirmarla.
+// Evita que consultas anteriores vuelvan a mostrar tarjetas que ya se confirmaron.
 const cardDeliverySaving=new Set(),cardDeliveryConfirmed=new Set();
-function cardDeliveryEntries(){
- try{const rows=JSON.parse(localStorage.getItem(CARD_DELIVERY_QUEUE_KEY)||'[]');return Array.isArray(rows)?rows.filter(r=>isUUID(r.profileId)&&isUUID(r.clientId)).slice(-100):[];}catch{return [];}
-}
 async function loadCardDeliveryQueue(){
  if(!session?.user?.id||$('admin')?.hidden)return;
  const profileId=currentProfileId();
  if(!isUUID(profileId))return;
  const seq=++cardDeliveryRequestId;
- const oldQueue=cardDeliveryEntries(),migrated=[];
- for(const item of oldQueue.filter(x=>x.profileId===profileId&&clients.some(c=>c.id===x.clientId))){
-  try{await rpc('nfc_owner_card_delivery_set',{p_client:item.clientId,p_action:'pending'},true);migrated.push(item.clientId);}
-  catch(error){console.warn('Pendiente sin migrar:',error.message);}
- }
- if(migrated.length){
-  try{localStorage.setItem(CARD_DELIVERY_QUEUE_KEY,JSON.stringify(oldQueue.filter(x=>!(x.profileId===profileId&&migrated.includes(x.clientId)))));}catch{}
- }
+ // El estado local de versiones anteriores ya no se reutiliza ni se reenvía a la base.
+ try{localStorage.removeItem(CARD_DELIVERY_QUEUE_KEY);}catch{}
  const rows=await rpc('nfc_owner_card_delivery_list',{p_profile:profileId},true);
  if(seq!==cardDeliveryRequestId||profileId!==currentProfileId())return;
  cardDeliveryProfileId=profileId;
@@ -4914,9 +4906,8 @@ function enqueueFirstPurchaseCard(client){
  return true;
 }
 function removePendingCardDelivery(clientId){
- const profileId=currentProfileId();
- const remaining=cardDeliveryEntries().filter(r=>!(r.clientId===clientId&&r.profileId===profileId));
- try{localStorage.setItem(CARD_DELIVERY_QUEUE_KEY,JSON.stringify(remaining));}catch{}
+ // Descartar definitivamente cualquier pendiente guardado por la app antigua.
+ try{localStorage.removeItem(CARD_DELIVERY_QUEUE_KEY);}catch{}
  cardDeliveryRemote=cardDeliveryRemote.filter(r=>r.clientId!==clientId);
  renderCardDeliveryQueue();
 }
