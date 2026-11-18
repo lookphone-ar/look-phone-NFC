@@ -4884,6 +4884,8 @@ function merchantCardWhatsAppUrl(client,profile){
 /* Pendientes sincronizados en Supabase: localStorage solo importa versiones anteriores. */
 const CARD_DELIVERY_QUEUE_KEY='look_card_delivery_pending_v1';
 let cardDeliveryRemote=[],cardDeliveryProfileId=null,cardDeliveryRequestId=0;
+// Impide que una respuesta vieja vuelva a mostrar una tarjeta durante o después de confirmarla.
+const cardDeliverySaving=new Set(),cardDeliveryConfirmed=new Set();
 function cardDeliveryEntries(){
  try{const rows=JSON.parse(localStorage.getItem(CARD_DELIVERY_QUEUE_KEY)||'[]');return Array.isArray(rows)?rows.filter(r=>isUUID(r.profileId)&&isUUID(r.clientId)).slice(-100):[];}catch{return [];}
 }
@@ -4902,7 +4904,8 @@ async function loadCardDeliveryQueue(){
  }
  const rows=await rpc('nfc_owner_card_delivery_list',{p_profile:profileId},true);
  if(seq!==cardDeliveryRequestId||profileId!==currentProfileId())return;
- cardDeliveryProfileId=profileId;cardDeliveryRemote=Array.isArray(rows)?rows:[];
+ cardDeliveryProfileId=profileId;
+ cardDeliveryRemote=(Array.isArray(rows)?rows:[]).filter(r=>!cardDeliverySaving.has(r.clientId)&&!cardDeliveryConfirmed.has(r.clientId));
  renderCardDeliveryQueue();
 }
 function enqueueFirstPurchaseCard(client){
@@ -4919,9 +4922,28 @@ function removePendingCardDelivery(clientId){
 }
 async function confirmPendingCardDelivery(clientId){
  if(!isUUID(clientId)||!clients.some(c=>c.id===clientId&&c.profile_id===currentProfileId()))throw new Error('Cliente no disponible');
- await rpc('nfc_owner_card_delivery_set',{p_client:clientId,p_action:'sent'},true);
- await loadCardDeliveryQueue();
- notify('Tarjeta marcada como enviada. Sincronizada con otros dispositivos.');
+ if(cardDeliverySaving.has(clientId))return;
+ const profileId=currentProfileId(),previousRows=cardDeliveryRemote.slice();
+ cardDeliverySaving.add(clientId);
+ ++cardDeliveryRequestId; // Invalida consultas iniciadas antes de confirmar.
+ cardDeliveryRemote=cardDeliveryRemote.filter(r=>r.clientId!==clientId);
+ renderCardDeliveryQueue(); // Sale de pendientes de inmediato.
+ try{
+  const saved=await rpc('nfc_owner_card_delivery_set',{p_client:clientId,p_action:'sent'},true);
+  if(saved!==true)throw new Error('No se pudo confirmar el estado de la tarjeta.');
+  cardDeliveryConfirmed.add(clientId);
+  removePendingCardDelivery(clientId); // Elimina también cualquier pendiente antiguo guardado en el navegador.
+  notify('Tarjeta marcada como enviada. El cambio se guardó para todos los dispositivos.');
+ }catch(error){
+  if(profileId===currentProfileId()){
+   cardDeliveryRemote=previousRows;
+   renderCardDeliveryQueue();
+  }
+  throw error;
+ }finally{
+  cardDeliverySaving.delete(clientId);
+  loadCardDeliveryQueue().catch(error=>console.warn('No se pudo actualizar la lista de tarjetas:',error.message));
+ }
 }
 function renderCardDeliveryQueue(){
  const box=$('cardDeliveryQueue');if(!box)return;
@@ -4948,7 +4970,7 @@ function argentinaWhatsApp(phone){
 
 window.addEventListener('focus',()=>{if(session?.user?.id&&!$('admin').hidden)loadCardDeliveryQueue().catch(()=>{});});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&session?.user?.id&&!$('admin').hidden)loadCardDeliveryQueue().catch(()=>{});});
-window.setInterval(()=>{if(document.visibilityState==='visible'&&session?.user?.id&&!$('admin').hidden)loadCardDeliveryQueue().catch(()=>{});},30000);
+window.setInterval(()=>{if(document.visibilityState==='visible'&&session?.user?.id&&!$('admin').hidden)loadCardDeliveryQueue().catch(()=>{});},10000);
 const CLIENT_CATEGORIES={new:{label:'Nuevo',min:0,max:2},frequent:{label:'Frecuente',min:3,max:9},vip:{label:'VIP',min:10,max:Infinity}};
 function realVisitCount(client){return events.filter(event=>event.client_id===client.id&&event.kind==='visit').length;}
 function automaticClientCategory(client){const visits=realVisitCount(client);return Object.entries(CLIENT_CATEGORIES).find(([,rule])=>visits>=rule.min&&visits<=rule.max)?.[0]||'new';}
