@@ -3221,6 +3221,9 @@ body.app-starting{display:none!important}
  #admin .quick-visit-card .quick-visit-actions>.quick-visit-gift{padding:5px!important;min-width:26px!important}
 }
 
+/* Fecha original de alta, visible sin truncar en Inicio y tarjetas pendientes. */
+#admin .quick-visit-card .quick-visit-info small.look-registration-date,#admin .card-delivery-row small.look-registration-date{display:block!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;color:#526579!important;font-size:10.5px!important;line-height:1.25!important;margin-top:2px!important}
+@media(max-width:650px){#admin .quick-visit-card .quick-visit-info small.look-registration-date{font-size:10px!important}}
 /* Gestión segura de clientes duplicados: fuera del listado activo, recuperables cuando tenían compras. */
 #admin .look-client-archive-toggle{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:#526579;white-space:nowrap;margin:0 6px;cursor:pointer}
 #admin .look-client-archive-toggle>input{width:14px;height:14px;min-height:0;margin:0}
@@ -4936,6 +4939,14 @@ async function confirmPendingCardDelivery(clientId){
   loadCardDeliveryQueue().catch(error=>console.warn('No se pudo actualizar la lista de tarjetas:',error.message));
  }
 }
+function clientRegistrationLabel(value){
+ if(!value)return 'Alta: sin fecha';
+ const date=new Date(value);
+ if(!Number.isFinite(date.getTime()))return 'Alta: sin fecha';
+ const parts=new Intl.DateTimeFormat('es-AR',{timeZone:'America/Argentina/Cordoba',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(date);
+ const get=type=>parts.find(p=>p.type===type)?.value||'';
+ return 'Alta: '+get('day')+'/'+get('month')+'/'+get('year')+' · '+get('hour')+':'+get('minute');
+}
 function renderCardDeliveryQueue(){
  const box=$('cardDeliveryQueue');if(!box)return;
  const p=profiles.find(x=>x.id===currentProfileId());
@@ -4946,7 +4957,7 @@ function renderCardDeliveryQueue(){
  const items=rows.map(c=>{
   const url=merchantCardWhatsAppUrl(c,p);
   const action=url?'<a href="'+esc(url)+'" class="button whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Abrir WhatsApp para enviar tarjeta a '+esc(c.name)+'">Enviar tarjeta</a>':'<small>Revisá el teléfono del cliente</small>';
-  return '<div class="card-delivery-row"><span><strong>'+esc(c.name)+'</strong><small style="display:block;color:#586a60">'+esc(c.phone||'Sin teléfono')+'</small></span><div class="row">'+action+'<button type="button" class="secondary" data-card-delivery-done="'+esc(c.id)+'">✓ Ya la envié</button></div></div>';
+  return '<div class="card-delivery-row"><span><strong>'+esc(c.name)+'</strong><small style="display:block;color:#586a60">'+esc(c.phone||'Sin teléfono')+'</small><small class="look-registration-date">'+esc(clientRegistrationLabel(c.created_at))+'</small></span><div class="row">'+action+'<button type="button" class="secondary" data-card-delivery-done="'+esc(c.id)+'">✓ Ya la envié</button></div></div>';
  }).join('');
  box.innerHTML='<details '+(opened?'open':'')+'><summary>📲 Tarjetas pendientes de enviar ('+rows.length+')</summary><p>Enviá el mensaje por WhatsApp y, después de tocar «Enviar» en el chat, seleccioná «✓ Ya la envié». El cambio se sincroniza entre celular y computadora. Abrir WhatsApp solo no confirma el envío.</p>'+items+'</details>';
 }
@@ -5225,6 +5236,7 @@ function renderQuickVisit(){
       <div class="quick-visit-info">
         <strong title="${esc(c.name)}">${esc(c.name)}</strong>
         <small>${esc(c.phone)} · ${Number(c.points)||0}/${p?.goal||'—'} pts${profiles.length>1&&p?' · '+esc(p.business):''}${eligible?' · 🎁 Premio':''}</small>
+        <small class="look-registration-date">${esc(clientRegistrationLabel(c.created_at))}</small>
       </div>
       <div class="quick-visit-actions">
         <input type="number" min="0.01" step="0.01" inputmode="decimal" data-quick-amount="${c.id}"
